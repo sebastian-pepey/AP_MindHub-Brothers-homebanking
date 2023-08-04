@@ -13,10 +13,15 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 
+	// Para indicarle a Spring que ejecute el método a continuación de la anotación @Bean.
+	// CommandLineRunner se ejecutará cuando se ejecute la aplicación, inmediatamente luego de montado.
+	// Dentro del método, se instancia la clase Cliente previamente creada, en este caso con parámetros
+	// correspondientes al cliente de prueba, y dicho objeto se guarda empleando el método save de la clase
+	// clientRepository creada la interfaz de repositorios (JPA).
 	@Bean
 	public CommandLineRunner init(ClientRepository clientRepository) {
 		return args -> {
-			Client client = new Client("Roberto","Pepey","robertopepey@gmail.com");
+			Client client = new Client("Conejo","Pepito","conejopepito@gmail.com");
 			clientRepository.save(client);
 
 		};
