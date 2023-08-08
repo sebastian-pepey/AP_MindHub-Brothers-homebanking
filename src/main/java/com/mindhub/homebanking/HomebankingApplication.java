@@ -60,7 +60,7 @@ public class HomebankingApplication {
 			transaction1.setAmount(-500);
 			transaction1.setDate(LocalDateTime.now());
 			transaction1.setDescription("Compra alfajor");
-			transaction1.setType(TransactionType.DEBITO);
+			transaction1.setType(TransactionType.DEBIT);
 			transaction1.addAccount(account1);
 
 			transactionRepository.save(transaction1);
@@ -72,7 +72,7 @@ public class HomebankingApplication {
 			transaction2.setAmount(1000);
 			transaction2.setDate(LocalDateTime.now());
 			transaction2.setDescription("Venta alfajor");
-			transaction2.setType(TransactionType.CREDITO);
+			transaction2.setType(TransactionType.CREDIT);
 			transaction2.addAccount(account1);
 
 			transactionRepository.save(transaction2);
