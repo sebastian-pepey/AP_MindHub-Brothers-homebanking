@@ -85,7 +85,7 @@
                                     <div class="card border-0 account">
                                         <div class="card-body">
                                             <h5 class="card-title">{{ accountNumber }}</h5>
-                                            <p class="card-text"> {{ Date(creationDate).toLocaleDateString() }}</p>
+                                            <p class="card-text"> {{ formatDate(creationDate) }}</p>
                                             <p class="text-center lead account-balance"> ${{ accountBalance }} </p>
                                         </div>
                                     </div>
