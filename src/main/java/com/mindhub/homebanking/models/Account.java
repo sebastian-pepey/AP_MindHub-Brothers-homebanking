@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 // Por medio de la anotación @Entity, se indica que el objeto, en este caso "Client"
@@ -24,7 +24,7 @@ public class Account {
     @GenericGenerator(name="native", strategy = "native")
     private Long id;
     private String accountNumber;
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
     private double accountBalance;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -45,11 +45,11 @@ public class Account {
         this.accountNumber = accountNumber;
     }
 
-    public LocalDateTime getCreationDate() {
+    public LocalDate getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
     }
 
