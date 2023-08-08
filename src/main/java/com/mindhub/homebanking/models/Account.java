@@ -2,9 +2,11 @@ package com.mindhub.homebanking.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 // Por medio de la anotación @Entity, se indica que el objeto, en este caso "Client"
@@ -30,6 +32,10 @@ public class Account {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @OneToMany(mappedBy ="account",fetch = FetchType.EAGER)
+    private Set<Transaction> transactions = new HashSet<>();
+
 
     public Account() { }
 
@@ -69,13 +75,24 @@ public class Account {
         this.client = client;
     }
 
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        transaction.addAccount(this);
+        this.transactions.add(transaction);
+    }
+
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
-                ", accountNumber=" + accountNumber +
+                ", accountNumber='" + accountNumber + '\'' +
                 ", creationDate=" + creationDate +
                 ", accountBalance=" + accountBalance +
+                ", client=" + client +
+                ", transactions=" + transactions +
                 '}';
     }
 }
