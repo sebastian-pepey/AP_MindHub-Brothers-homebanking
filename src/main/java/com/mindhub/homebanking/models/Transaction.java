@@ -1,8 +1,5 @@
 package com.mindhub.homebanking.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,7 +10,9 @@ import java.time.LocalDateTime;
 //      el cual le dice con "native" que Hibernate se va a encargar de la asignación de ids.
 // >>   Se declaran los atributos de la (en este caso) entidad. En particular, @ManyToOne, es la relación
 //      que indica que esta Entidad tiene una relación muchos a uno. @JoinColumn es una anotación de
-//      JPA que indica que se debe agregar una columna con el id
+//      JPA que indica que se debe agregar una columna con el id de cuenta para vincular la transacción con
+//      la cuenta
+// >>   Getters y Setters para efectuar los métodos para acceder a los atributos
 @Entity
 public class Transaction {
     @Id
