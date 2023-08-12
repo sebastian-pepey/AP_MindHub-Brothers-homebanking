@@ -1,10 +1,10 @@
 package com.mindhub.homebanking.dtos;
-
 import com.mindhub.homebanking.models.Account;
-
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+// Los Data Transfer Objects se emplean para restringir la información que se trae desde la DB.
 
 public class AccountDTO {
     private Long id;

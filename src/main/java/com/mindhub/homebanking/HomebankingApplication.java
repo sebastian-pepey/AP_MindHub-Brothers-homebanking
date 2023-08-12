@@ -1,9 +1,6 @@
 package com.mindhub.homebanking;
 import com.mindhub.homebanking.models.*;
-import com.mindhub.homebanking.repositories.ClientRepository;
-import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.LoanRepository;
-import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +22,7 @@ public class HomebankingApplication {
 	// correspondientes al cliente de prueba, y dicho objeto se guarda empleando el método save de la clase
 	// clientRepository creada la interfaz de repositorios (JPA).
 	@Bean
-	public CommandLineRunner init(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository) {
+	public CommandLineRunner init(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) {
 		return args -> {
 			Client client1 = new Client("Melba","Morel","melbamorel@gmail.com");
 
@@ -88,6 +85,13 @@ public class HomebankingApplication {
 
 			loanRepository.save(loan1);
 
+			ClientLoan clientLoan1 = new ClientLoan(client1, loan1,400000,60);
+
+			clientLoan1.setClient(client1);
+			clientLoan1.setLoan(loan1);
+
+			clientLoanRepository.save(clientLoan1);
+
 			Loan loan2 = new Loan();
 
 			loan2.setName("Personal");
@@ -95,6 +99,10 @@ public class HomebankingApplication {
 			loan2.setPayments(List.of(6,12,24));
 
 			loanRepository.save(loan2);
+
+			ClientLoan clientLoan2 = new ClientLoan(client1, loan2,50000,12);
+
+			clientLoanRepository.save(clientLoan2);
 
 			Loan loan3 = new Loan();
 
@@ -104,9 +112,9 @@ public class HomebankingApplication {
 
 			loanRepository.save(loan3);
 
-			client1.addLoan(loan1);
-			client1.addLoan(loan2);
-			client2.addLoan(loan3);
+			ClientLoan clientLoan3 = new ClientLoan(client2, loan3,50000,36);
+
+			clientLoanRepository.save(clientLoan3);
 		};
 	}
 }
