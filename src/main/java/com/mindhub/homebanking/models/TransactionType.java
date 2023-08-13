@@ -1,6 +1,6 @@
 package com.mindhub.homebanking.models;
 
-// Las class "enum" es una clase especial que representa un grupo de constantes.
+// Las class "enum" son una clase especial que representa un grupo de constantes.
 
 public enum TransactionType {
     CREDIT,

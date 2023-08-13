@@ -5,6 +5,10 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDate;
 
+// Por medio de la anotación @Entity, se indica que el objeto, en este caso "Card"
+// representará una entidad en la Base de Datos. Es decir, que cada uno de sus atributos
+// se corresponderá con una columna de la DB.
+
 @Entity
 public class Card {
     @Id

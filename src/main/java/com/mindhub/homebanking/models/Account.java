@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-
 // Por medio de la anotación @Entity, se indica que el objeto, en este caso "Account"
 // representará una entidad en la Base de Datos. Es decir, que cada uno de sus atributos
 // se corresponderá con una columna de la DB.
