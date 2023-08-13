@@ -8,7 +8,7 @@ import java.util.Set;
 
 // Por medio de la anotación @Entity, se indica que el objeto, en este caso "Client"
 // representará una entidad en la Base de Datos. Es decir, que cada uno de sus atributos
-// se corresponderá con una columna de la BD.
+// se corresponderá con una columna de la DB.
 
 @Entity
 public class Client {

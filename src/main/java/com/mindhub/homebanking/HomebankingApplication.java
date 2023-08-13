@@ -85,6 +85,9 @@ public class HomebankingApplication {
 
 			loanRepository.save(loan1);
 
+			// Se crean primero los préstamos y los clientes, luego se emplea el constructor para
+			// crear la instancia de la entidad intermedia (tabla pivote en la DB).
+
 			ClientLoan clientLoan1 = new ClientLoan(client1, loan1,400000,60);
 
 			clientLoan1.setClient(client1);
