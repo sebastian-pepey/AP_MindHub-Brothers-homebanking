@@ -22,7 +22,12 @@ public class HomebankingApplication {
 	// correspondientes al cliente de prueba, y dicho objeto se guarda empleando el método save de la clase
 	// clientRepository creada la interfaz de repositorios (JPA).
 	@Bean
-	public CommandLineRunner init(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) {
+	public CommandLineRunner init(ClientRepository clientRepository,
+								  AccountRepository accountRepository,
+								  TransactionRepository transactionRepository,
+								  LoanRepository loanRepository,
+								  ClientLoanRepository clientLoanRepository,
+								  CardRepository cardRepository) {
 		return args -> {
 			Client client1 = new Client("Melba","Morel","melbamorel@gmail.com");
 
@@ -118,6 +123,31 @@ public class HomebankingApplication {
 			ClientLoan clientLoan3 = new ClientLoan(client2, loan3,50000,36);
 
 			clientLoanRepository.save(clientLoan3);
+
+			Card card1 = new Card();
+
+			card1.setCardholder(client1);
+			card1.setCardColor(CardColor.GOLD);
+			card1.setNumber("3325 6745 7876 4445");
+			card1.setFromDate(LocalDate.of(2021,04,26));
+			card1.setThruDate(LocalDate.of(2021,04,26).plusYears(5));
+			card1.setCardType(CardType.DEBIT);
+			card1.setCvv(990);
+
+			cardRepository.save(card1);
+
+			Card card2 = new Card();
+
+			card2.setCardholder(client1);
+			card2.setCardColor(CardColor.TITANIUM);
+			card2.setNumber("2234 6745 552 7888");
+			card2.setFromDate(LocalDate.of(2021,04,26));
+			card2.setThruDate(LocalDate.of(2021,04,26).plusYears(5));
+			card2.setCardType(CardType.CREDIT);
+			card2.setCvv(750);
+
+			cardRepository.save(card2);
+
 		};
 	}
 }
