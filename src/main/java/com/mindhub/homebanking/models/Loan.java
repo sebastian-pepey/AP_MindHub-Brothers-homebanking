@@ -31,7 +31,7 @@ public class Loan {
     // los datos desordenados, vinculará las tablas, colocando el id (PK) de esta Entidad (Tabla)
     // como FK en la entidad restante.
     @OneToMany(mappedBy = "loan", fetch = FetchType.EAGER)
-    private Set<ClientLoan> clients = new HashSet<>();
+    private Set<ClientLoan> clientLoans = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -57,9 +57,9 @@ public class Loan {
 
     public void addClientLoan(ClientLoan client){
         client.setLoan(this);
-        clients.add(client);
+        clientLoans.add(client);
     }
     public Set<ClientLoan> getClient() {
-        return clients;
+        return clientLoans;
     }
 }

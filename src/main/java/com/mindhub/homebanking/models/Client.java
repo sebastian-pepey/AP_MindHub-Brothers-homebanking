@@ -1,8 +1,10 @@
 package com.mindhub.homebanking.models;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -25,21 +27,24 @@ public class Client {
     private String firstName;
     private String lastName;
     private String email;
+    // Se agrega el Password del cliente
+    private String password;
     @OneToMany(mappedBy ="client", fetch = FetchType.EAGER)
     private Set<Account> accounts = new HashSet<>();
 
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
-    private Set<ClientLoan> loans = new HashSet<>();
+    private Set<ClientLoan> clientLoans = new HashSet<>();
 
     @OneToMany(mappedBy = "cardholder", fetch = FetchType.EAGER)
     private Set<Card> cards = new HashSet<>();
 
     public Client() { }
 
-    public Client(String name, String surname, String email) {
+    public Client(String name, String surname, String email, String password) {
         this.firstName = name;
         this.lastName = surname;
         this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
@@ -64,10 +69,19 @@ public class Client {
         return lastName;
     }
 
+
     public void setLastName(String lastName) {
         if(!lastName.isBlank()){
             this.lastName = lastName;
         }
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -89,7 +103,7 @@ public class Client {
 
     public void addLoan(ClientLoan loan){
         loan.setClient(this);
-        this.loans.add(loan);
+        this.clientLoans.add(loan);
     }
 
     public Set<Card> getCards() {
@@ -102,7 +116,7 @@ public class Client {
     }
 
     public Set<ClientLoan> getLoans() {
-        return loans;
+        return clientLoans;
     }
 
     @Override
