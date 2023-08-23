@@ -48,6 +48,7 @@
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Email</th>
+                                <th> Role </th>
                                 <th>Make Admin</th>
                             </tr>
                         </thead>
@@ -56,6 +57,7 @@
                                 <td>{{ client.firstName }}</td>
                                 <td>{{ client.lastName }}</td>
                                 <td>{{ client.email }}</td>
+                                <td>{{ client.permission }}</td>
                                 <td>
                                     <button type="submit" class="btn btn-success" id=",make_admin" v-on:click="makeAdmin(client.email)" v-if="client.permission!=='ADMIN'">
                                         Make Admin
