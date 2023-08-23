@@ -37,13 +37,17 @@ public class HomebankingApplication {
 								  CardRepository cardRepository) {
 		return args -> {
 
-			Client client1 = new Client("Melba","Morel","melbamorel@gmail.com", passwordEncoder.encode("oreo123"));
+			Client client1 = new Client("Melba","Morel","melbamorel@gmail.com", passwordEncoder.encode("oreo123"), ClientAuthority.CLIENT);
 
 			clientRepository.save(client1);
 
-			Client client2 = new Client("Capitan","Beto","capitanbeto@gmail.com", passwordEncoder.encode("pass_invisible"));
+			Client client2 = new Client("Capitan","Beto","capitanbeto@gmail.com", passwordEncoder.encode("pass_invisible"), ClientAuthority.CLIENT);
 
 			clientRepository.save(client2);
+
+			Client admin = new Client("admin","admin","admin@gmail.com", passwordEncoder.encode("verruckt"), ClientAuthority.ADMIN);
+
+			clientRepository.save(admin);
 
 			// Create Account 1
 			Account account1 = new Account();
@@ -52,7 +56,8 @@ public class HomebankingApplication {
 			account1.setCreationDate(LocalDate.now());
 			account1.setAccountNumber("VIN001");
 			account1.setAccountBalance(5000);
-			account1.setClient(client1);
+
+			client1.addAccount(account1);
 
 			accountRepository.save(account1);
 
@@ -63,7 +68,7 @@ public class HomebankingApplication {
 			account2.setCreationDate(LocalDate.now().plusDays(1));
 			account2.setAccountNumber("VIN002");
 			account2.setAccountBalance(7500);
-			account2.setClient(client1);
+			client1.addAccount(account2);
 
 			accountRepository.save(account2);
 

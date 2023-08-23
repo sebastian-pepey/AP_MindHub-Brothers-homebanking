@@ -4,9 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
 
 // Por medio de la anotación @Entity, se indica que el objeto, en este caso "Client"
 // representará una entidad en la Base de Datos. Es decir, que cada uno de sus atributos
@@ -38,13 +36,16 @@ public class Client {
     @OneToMany(mappedBy = "cardholder", fetch = FetchType.EAGER)
     private Set<Card> cards = new HashSet<>();
 
+    private ClientAuthority clientAuthority;
+
     public Client() { }
 
-    public Client(String name, String surname, String email, String password) {
+    public Client(String name, String surname, String email, String password, ClientAuthority clientAuthority) {
         this.firstName = name;
         this.lastName = surname;
         this.email = email;
         this.password = password;
+        this.clientAuthority = clientAuthority;
     }
 
     public Long getId() {
@@ -119,6 +120,10 @@ public class Client {
         return clientLoans;
     }
 
+    public ClientAuthority getClientAuthority() {
+        return clientAuthority;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -126,6 +131,8 @@ public class Client {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", clientAuthority=" + clientAuthority.name() +
                 '}';
     }
 }

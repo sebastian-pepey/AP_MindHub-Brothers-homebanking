@@ -1,13 +1,9 @@
 package com.mindhub.homebanking.controllers;
 
-import com.mindhub.homebanking.models.Account;
-import com.mindhub.homebanking.models.Client;
-import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import com.mindhub.homebanking.dtos.ClientDTO;
 
 import java.util.List;
@@ -29,4 +25,8 @@ public class ClientController {
         return new ClientDTO(clientRepository.findById(id).orElse(null));
     }
 
+    @RequestMapping("/validation")
+    public boolean isAdmin(Authentication auth) {
+        return auth.getName().substring(auth.getName().indexOf("@")+1,auth.getName().indexOf(".")).toUpperCase().equals("ADMIN");
+    }
 }
