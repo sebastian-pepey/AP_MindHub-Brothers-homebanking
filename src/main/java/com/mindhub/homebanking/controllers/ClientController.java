@@ -34,9 +34,8 @@ public class ClientController {
         return clientRepository.findByEmail(auth.getName()).getClientAuthority().name().equals("ADMIN");
     }
 
-    @RequestMapping(value = "/changeAuthority", method = RequestMethod.PUT)
+    @RequestMapping(value = "/changeAuthority", method = RequestMethod.PATCH)
     public ResponseEntity<Object> changeAuthority(@RequestParam String email) {
-        System.out.println(email);
         Client client=clientRepository.findByEmail(email);
         client.setClientAuthority(ClientAuthority.ADMIN);
         clientRepository.save(client);

@@ -36,7 +36,7 @@ Vue.createApp({
                     'content-type': 'application/x-www-form-urlencoded'
                 }
             }
-            axios.put('/api/changeAuthority', `email=${clientEmail}`, config)
+            axios.patch('/api/changeAuthority', `email=${clientEmail}`, config)
             .then(response => window.location.href = "/manager.html");
         },
         // code to post a new client using AJAX
