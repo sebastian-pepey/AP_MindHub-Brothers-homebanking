@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.dtos;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.ClientAuthority;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ public class ClientDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String permission;
     private Set<ClientLoanDTO> loans;
     private Set<AccountDTO> accounts;
     private Set<CardDTO> cards;
@@ -19,7 +21,7 @@ public class ClientDTO {
         this.firstName = client.getFirstName();
         this.lastName = client.getLastName();
         this.email = client.getEmail();
-
+        this.permission = client.getPermission();
         // Se crea un Set (no está ordenado como una lista y no puede repetirse) de
         // * AccountDTO
         // * ClientDTO
@@ -44,11 +46,14 @@ public class ClientDTO {
     public String getEmail() {
         return email;
     }
+
+    public String getPermission() {
+        return permission;
+    }
     public Set<AccountDTO> getAccounts() {
         return accounts;
     }
     public Set<ClientLoanDTO> getLoans() { return loans;}
-
     public Set<CardDTO> getCards() {
         return cards;
     }

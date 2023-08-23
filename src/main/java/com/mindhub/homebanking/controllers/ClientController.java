@@ -1,7 +1,11 @@
 package com.mindhub.homebanking.controllers;
 
+import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.ClientAuthority;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import com.mindhub.homebanking.dtos.ClientDTO;
@@ -27,6 +31,15 @@ public class ClientController {
 
     @RequestMapping("/validation")
     public boolean isAdmin(Authentication auth) {
-        return auth.getName().substring(auth.getName().indexOf("@")+1,auth.getName().indexOf(".")).toUpperCase().equals("ADMIN");
+        return clientRepository.findByEmail(auth.getName()).getClientAuthority().name().equals("ADMIN");
+    }
+
+    @RequestMapping(value = "/changeAuthority", method = RequestMethod.PUT)
+    public ResponseEntity<Object> changeAuthority(@RequestParam String email) {
+        System.out.println(email);
+        Client client=clientRepository.findByEmail(email);
+        client.setClientAuthority(ClientAuthority.ADMIN);
+        clientRepository.save(client);
+        return new ResponseEntity<>("Authority Changed", HttpStatus.OK);
     }
 }

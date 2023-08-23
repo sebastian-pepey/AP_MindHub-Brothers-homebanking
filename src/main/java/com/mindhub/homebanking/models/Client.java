@@ -97,6 +97,18 @@ public class Client {
         return accounts;
     }
 
+    public ClientAuthority getClientAuthority() {
+        return clientAuthority;
+    }
+
+    public String getPermission() {
+        return clientAuthority.toString();
+    }
+
+    public void setClientAuthority(ClientAuthority clientAuthority) {
+        this.clientAuthority = clientAuthority;
+    }
+
     public void addAccount(Account account) {
         account.setClient(this);
         this.accounts.add(account);
@@ -118,10 +130,6 @@ public class Client {
 
     public Set<ClientLoan> getLoans() {
         return clientLoans;
-    }
-
-    public ClientAuthority getClientAuthority() {
-        return clientAuthority;
     }
 
     @Override

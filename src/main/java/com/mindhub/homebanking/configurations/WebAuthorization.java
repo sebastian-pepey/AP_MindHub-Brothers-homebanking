@@ -21,10 +21,9 @@ public class WebAuthorization {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/clients").permitAll()
-                .antMatchers("/admin/**","/rest/**","/h2-console/**").hasAuthority("ADMIN")
-                .antMatchers("/public/**").permitAll()
+                .antMatchers("/","/api/validation","/web/img/**","/web/index.html","/web/css/style.css","/web/js/index.js").permitAll()
+                .antMatchers("/api/clients","/manager.html","/manager.js","/rest/**","/h2-console/**").hasAuthority("ADMIN")
                 .antMatchers("/web/**").hasAuthority("CLIENT");
 
         http.formLogin()
@@ -68,7 +67,7 @@ public class WebAuthorization {
 
         // if logout is successful, just send a success response
         http.logout().logoutSuccessHandler((req, res, auth) -> {
-            res.sendRedirect("/public/index.html");
+            res.sendRedirect("/web/index.html");
         });
 
         return http.build();

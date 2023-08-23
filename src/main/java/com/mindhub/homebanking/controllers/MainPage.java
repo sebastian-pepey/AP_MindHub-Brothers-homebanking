@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MainPage {
     @RequestMapping(value = "/")
     public String redirect(){
-        return "redirect:/public/index.html";
+        return "redirect:/web/index.html";
     }
 }

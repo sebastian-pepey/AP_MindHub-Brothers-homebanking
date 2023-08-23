@@ -45,7 +45,7 @@ public class HomebankingApplication {
 
 			clientRepository.save(client2);
 
-			Client admin = new Client("admin","admin","admin@gmail.com", passwordEncoder.encode("verruckt"), ClientAuthority.ADMIN);
+			Client admin = new Client("admin","admin","admin@admin.com", passwordEncoder.encode("verruckt"), ClientAuthority.ADMIN);
 
 			clientRepository.save(admin);
 

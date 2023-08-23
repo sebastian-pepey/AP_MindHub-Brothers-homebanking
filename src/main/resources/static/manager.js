@@ -14,11 +14,11 @@ Vue.createApp({
     methods: {
         // load and display JSON sent by server for /clients
         loadData() {
-            axios.get("/clients")
+            axios.get("/api/clients")
                 .then((response) => {
                     // handle success
                     this.outPut = response.data;
-                    this.clients = response.data._embedded.clients;
+                    this.clients = response.data;
                 })
                 .catch((error) => {
                     alert("Error loading clients: " + error)
@@ -30,10 +30,19 @@ Vue.createApp({
                 this.postClient(this.email, this.firstName, this.lastName);
             }
         },
+        makeAdmin(clientEmail) {
+            let config = {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            }
+            axios.put('/api/changeAuthority', `email=${clientEmail}`, config)
+            .then(response => window.location.href = "/manager.html");
+        },
         // code to post a new client using AJAX
         // on success, reload and display the updated data from the server
         postClient(email, firstName, lastName) {
-            axios.post("/clients", { "email": email, "firstName": firstName, "lastName": lastName })
+            axios.post("/api/clients", { "email": email, "firstName": firstName, "lastName": lastName })
                 .then((response) => {
                     // handle success
                     this.loadData();
