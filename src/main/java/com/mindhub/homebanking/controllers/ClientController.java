@@ -41,4 +41,5 @@ public class ClientController {
         clientRepository.save(client);
         return new ResponseEntity<>("Authority Changed", HttpStatus.OK);
     }
+
 }

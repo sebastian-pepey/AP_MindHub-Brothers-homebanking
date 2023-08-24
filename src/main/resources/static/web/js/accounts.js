@@ -19,6 +19,24 @@ Vue.createApp({
                     this.errorToats.show();
                 })
         },
+
+        addAccount: function() {
+            axios.post("/api/clients/current/accounts")
+            .then(response => {
+                window.location.href = "/web/accounts.html"
+                alert(response.data);
+            })
+
+            .catch((error) => {
+                // handle error
+                if(error.code==="ERR_BAD_REQUEST") {
+                    this.errorMsg = error.response.data;
+                } else {
+                    this.errorMsg = "Error getting data";
+                }
+                this.errorToats.show();
+            })
+        },
         formatDate: function (date) {
             return new Date(date).toLocaleDateString('en-gb');
         }
