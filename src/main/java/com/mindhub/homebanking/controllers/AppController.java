@@ -30,12 +30,6 @@ public class AppController {
     @Autowired
     private ClientRepository clientRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
-
-    @Autowired
-    private CardRepository cardRepository;
-
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Object> register(
             @RequestParam String firstName,
@@ -57,66 +51,5 @@ public class AppController {
     @RequestMapping("/clients/current")
     public ClientDTO getConnectedClient(Authentication authentication) {
         return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
-    }
-
-    @RequestMapping(value = "/clients/current/accounts", method = RequestMethod.POST)
-    public ResponseEntity<Object> addAccount(Authentication authentication) {
-
-        Client currentClient = clientRepository.findByEmail(authentication.getName());
-        if(currentClient.getAccounts().size() < 3 ){
-            Account newAccount = new Account();
-            // Set attributes of new Account
-            newAccount.setCreationDate(LocalDate.now());
-            newAccount.setAccountNumber("VIN"+LocalDate.now().toString());
-            newAccount.setAccountBalance(0);
-
-            System.out.println(newAccount);
-
-            currentClient.addAccount(newAccount);
-
-            accountRepository.save(newAccount);
-
-            clientRepository.save(currentClient);
-
-            return new ResponseEntity<>("Account added",HttpStatus.OK);
-
-        } else {
-            return new ResponseEntity<>("The client can't create more than 3 accounts",HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @RequestMapping(value = "/clients/current/accounts")
-    public Set<AccountDTO> showAccounts(Authentication authentication) {
-        return clientRepository.findByEmail(authentication.getName()).getAccounts().stream().map( account -> new AccountDTO(account)).collect(Collectors.toSet());
-    }
-
-    @RequestMapping(value = "/clients/current/cards", method = RequestMethod.POST)
-    public ResponseEntity<Object> addCards(Authentication authentication,
-                                           @RequestParam String cardType,
-                                           @RequestParam String cardColor) {
-
-        Client currentClient = clientRepository.findByEmail(authentication.getName());
-        if(currentClient.getCards().size() < 3 ){
-            Card newCard = new Card();
-            // Set attributes of new Account
-            newCard.setCardholder(currentClient);
-            newCard.setCardColor(CardColor.valueOf(cardColor));
-            newCard.setNumber("4444 6745 7876 4445");
-            newCard.setFromDate(LocalDate.of(2021,04,26));
-            newCard.setThruDate(LocalDate.of(2021,04,26).plusYears(5));
-            newCard.setCardType(CardType.valueOf(cardType));
-            newCard.setCvv(110);
-            currentClient.addCard(newCard);
-            cardRepository.save(newCard);
-            clientRepository.save(currentClient);
-            return new ResponseEntity<>("Card Created",HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("The client can't create more than 3 cards",HttpStatus.FORBIDDEN);
-        }
-    }
-
-    @RequestMapping(value = "/clients/current/cards")
-    public Set<CardDTO> showCards(Authentication authentication) {
-        return clientRepository.findByEmail(authentication.getName()).getCards().stream().map( card -> new CardDTO(card)).collect(Collectors.toSet());
     }
 }

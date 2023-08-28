@@ -69,9 +69,7 @@
                         </ul>
                         <hr>
                         <ul class="nav nav-pills flex-column mb-auto">
-                            <a href="/api/logout" class="btn btn-danger img-fluid">
-                                Sign out
-                            </a>
+                            <button class="btn btn-danger img-fluid" v-on:click="signOut">Sign out</button>
                         </ul>
                     </div>
                 </div>
@@ -84,18 +82,18 @@
                     <div class="row mt-3">
                         <div class="col">
                             <h2 class="display-6 subtitle">Accounts</h2>
+                            <button v-if="clientInfo.accounts != null && clientInfo.accounts.length < 3"
+                                v-on:click="create" id="create" class="btn btn-sm btn-success">Create</button>
                         </div>
-                        <button type="submit" class="btn btn-success" id="add_client" v-on:click="addAccount">Add Account
-                        </button>
                     </div>
                     <div class="row mx-2">
                         <div v-for="account in clientInfo.accounts" class="col-12 col-md-4 mt-2 ">
                             <a class="account-link" v-bind:href="'/web/account.html?id='+account.id">
                                 <div class="card border-0 account">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ account.accountNumber }}</h5>
-                                        <p class="card-text"> {{ formatDate(account.creationDate) }}</p>
-                                        <p class="text-center lead account-balance"> ${{ account.accountBalance }} </p>
+                                        <h5 class="card-title">{{ account.number }}</h5>
+                                        <p class="card-text"> {{ formatDate(account.date) }}</p>
+                                        <p class="text-center lead account-balance"> ${{ account.balance }} </p>
                                     </div>
                                 </div>
                             </a>

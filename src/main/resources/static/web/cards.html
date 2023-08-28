@@ -70,9 +70,7 @@
                         </ul>
                         <hr>
                         <ul class="nav nav-pills flex-column mb-auto">
-                            <a href="/api/logout" class="btn btn-danger img-fluid">
-                                Sign out
-                            </a>
+                            <button class="btn btn-danger img-fluid" v-on:click="signOut">Sign out</button>
                         </ul>
                     </div>
                 </div>
@@ -85,15 +83,17 @@
                     <div class="row mt-3">
                         <div class="col">
                             <h2 class="display-6 subtitle">Debit Cards</h2>
+                            <a v-if="clientInfo.cards != null && clientInfo.cards.length < 6" href="create-cards.html"
+                                id="create" class="btn btn-sm btn-success">Create</a>
                             <div v-if="debitCards.length <= 0"><span class="small">No debit cards</span></div>
                         </div>
                     </div>
                     <div class="row">
                         <div v-for="card in debitCards" class="plastic-card col-12 col-md-3 mt-2">
                             <div
-                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__square">
-                                    <span class="plastic-card__label">{{ card.cardType}} {{ card.cardColor }}</span>
+                                    <span class="plastic-card__label">{{card.type}} {{ card.color }}</span>
                                 </div>
                                 <img class="plastic-card__front-logo plastic-card__logo" src="img/Mindhub-logo.png">
                                 <p class="plastic-card_numer">{{ card.number}}</p>
@@ -108,14 +108,14 @@
                             </div>
 
                             <div
-                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__black-line"></div>
                                 <div class="plastic-card__back-content">
                                     <div class="plastic-card__secret">
                                         <p class="plastic-card__secret--last">{{ card.cvv}}</p>
                                     </div>
                                     <div class="plastic-card__back-square plastic-card__square">
-                                        <span class="plastic-card__label">{{ card.cardType}} {{ card.cardColor }}</span>
+                                        <span class="plastic-card__label">{{ card.type}} {{ card.color }}</span>
                                     </div>
                                     <img class="plastic-card__back-logo plastic-card__logo" src="img/Mindhub-logo.png">
                                 </div>
@@ -131,7 +131,7 @@
                     <div class="row">
                         <div v-for="card in creditCards" class="plastic-card col-12 col-md-3 mt-2">
                             <div
-                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__square">
                                     <span class="plastic-card__label">{{ card.type}} {{ card.color }}</span>
                                 </div>
@@ -148,7 +148,7 @@
                             </div>
 
                             <div
-                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.cardColor.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
                                 <div class="plastic-card__black-line"></div>
                                 <div class="plastic-card__back-content">
                                     <div class="plastic-card__secret">
@@ -172,7 +172,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
         crossorigin="anonymous"></script>
-    <script src="js/cards.js"></script>  
+    <script src="js/cards.js"></script>
 </body>
 
 </html>

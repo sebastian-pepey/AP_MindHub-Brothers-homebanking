@@ -69,7 +69,7 @@
                         </ul>
                         <hr>
                         <ul class="nav nav-pills flex-column mb-auto">
-                            <button class="btn btn-danger img-fluid">Sign out</button>
+                            <button class="btn btn-danger img-fluid" v-on:click="signOut">Sign out</button>
                         </ul>
                     </div>
                 </div>
@@ -81,8 +81,8 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col">
-                            <h2 class="display-6 account">Account Number: {{ accountInfo.accountNumber }} - Balance: ${{
-                                accountInfo.accountBalance }}</h2>
+                            <h2 class="display-6 account">Account Number: {{ accountInfo.number }} - Balance: ${{
+                                accountInfo.balance }}</h2>
                         </div>
                     </div>
                     <div class="row mt-3">

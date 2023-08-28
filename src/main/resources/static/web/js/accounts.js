@@ -1,4 +1,5 @@
 Vue.createApp({
+
     data() {
         return {
             clientInfo: {},
@@ -19,26 +20,24 @@ Vue.createApp({
                     this.errorToats.show();
                 })
         },
-
-        addAccount: function() {
-            axios.post("/api/clients/current/accounts")
-            .then(response => {
-                window.location.href = "/web/accounts.html"
-                alert(response.data);
-            })
-
-            .catch((error) => {
-                // handle error
-                if(error.code==="ERR_BAD_REQUEST") {
-                    this.errorMsg = error.response.data;
-                } else {
-                    this.errorMsg = "Error getting data";
-                }
-                this.errorToats.show();
-            })
-        },
         formatDate: function (date) {
             return new Date(date).toLocaleDateString('en-gb');
+        },
+        signOut: function () {
+            axios.post('/api/logout')
+                .then(response => window.location.href = "/web/index.html")
+                .catch(() => {
+                    this.errorMsg = "Sign out failed"
+                    this.errorToats.show();
+                })
+        },
+        create: function () {
+            axios.post('/api/clients/current/accounts')
+                .then(response => window.location.reload())
+                .catch((error) => {
+                    this.errorMsg = error.response.data;
+                    this.errorToats.show();
+                })
         }
     },
     mounted: function () {

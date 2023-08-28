@@ -22,7 +22,7 @@ public class Card {
     private LocalDate fromDate;
     private LocalDate thruDate;
     private int cvv;
-    private CardType cardType;
+    private CardType type;
     private CardColor cardColor;
 
     public Card() { }
@@ -72,11 +72,11 @@ public class Card {
     }
 
     public CardType getCardType() {
-        return cardType;
+        return type;
     }
 
-    public void setCardType(CardType cardType) {
-        this.cardType = cardType;
+    public void setCardType(CardType type) {
+        this.type = type;
     }
 
     public CardColor getCardColor() {
