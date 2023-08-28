@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.mindhub.homebanking.dtos.ClientDTO;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.Random;
@@ -29,10 +32,35 @@ public class ClientController {
     private AccountRepository accountRepository;
     @Autowired
     private CardRepository cardRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/clients")
     public ResponseEntity<Object> getClients(){
         return new ResponseEntity<>(clientRepository.findAll().stream().map( client -> new ClientDTO(client)).collect(Collectors.toList()),HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "/clients", method = RequestMethod.POST)
+    public ResponseEntity<Object> register(
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String email,
+            @RequestParam String password){
+        if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){
+            return new ResponseEntity<>("Missing Data", HttpStatus.FORBIDDEN);
+        }
+
+        if(clientRepository.findByEmail(email) != null) {
+            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+        }
+
+        clientRepository.save(new Client(firstName,lastName,email,passwordEncoder.encode(password), ClientAuthority.CLIENT));
+        return new ResponseEntity<>("Client created",HttpStatus.CREATED);
+    }
+
+    @RequestMapping("/clients/current")
+    public ClientDTO getConnectedClient(Authentication authentication) {
+        return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
     }
 
     @RequestMapping("/clients/{id}")
@@ -94,7 +122,7 @@ public class ClientController {
         Client currentClient = clientRepository.findByEmail(authentication.getName());
         CustomUtils customUtils = new CustomUtils();
 
-        if(customUtils.count("Type",CardType.valueOf(cardType), cardRepository) < 3 ){
+        if(currentClient.getCards().stream().filter( card -> card.getCardType() == CardType.valueOf(cardType)).collect(Collectors.toSet()).size() < 3) {
             Card newCard = new Card();
             // Set attributes of new Account
             newCard.setCardholder(currentClient);
@@ -133,3 +161,5 @@ public class ClientController {
     }
 
 }
+
+

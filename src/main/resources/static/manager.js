@@ -42,7 +42,7 @@ Vue.createApp({
         // code to post a new client using AJAX
         // on success, reload and display the updated data from the server
         postClient(email, firstName, lastName) {
-            axios.post("/api/clients", { "email": email, "firstName": firstName, "lastName": lastName })
+            axios.post("/api/clients", { "email": email, "firstName": firstName, "lastName": lastName, "password": password })
                 .then((response) => {
                     // handle success
                     this.loadData();

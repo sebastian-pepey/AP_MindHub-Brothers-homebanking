@@ -27,6 +27,16 @@ public class Card {
 
     public Card() { }
 
+    public Card(String number, Client cardholder, LocalDate fromDate, LocalDate thruDate, int cvv, CardType type, CardColor cardColor) {
+        this.number = number;
+        this.cardholder = cardholder;
+        this.fromDate = fromDate;
+        this.thruDate = thruDate;
+        this.cvv = cvv;
+        this.type = type;
+        this.cardColor = cardColor;
+    }
+
     public Long getId() {
         return id;
     }

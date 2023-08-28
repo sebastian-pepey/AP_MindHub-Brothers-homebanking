@@ -137,27 +137,11 @@ public class HomebankingApplication {
 
 			clientLoanRepository.save(clientLoan3);
 
-			Card card1 = new Card();
-
-			card1.setCardholder(client1);
-			card1.setCardColor(CardColor.GOLD);
-			card1.setNumber("3325 6745 7876 4445");
-			card1.setFromDate(LocalDate.of(2021,04,26));
-			card1.setThruDate(LocalDate.of(2021,04,26).plusYears(5));
-			card1.setCardType(CardType.DEBIT);
-			card1.setCvv(990);
+			Card card1 = new Card("3325 6745 7876 4445", client1, LocalDate.of(2023,04,26), LocalDate.of(2021,04,26).plusYears(5), 990, CardType.DEBIT, CardColor.GOLD);
 
 			cardRepository.save(card1);
 
-			Card card2 = new Card();
-
-			card2.setCardholder(client1);
-			card2.setCardColor(CardColor.TITANIUM);
-			card2.setNumber("2234 6745 552 7888");
-			card2.setFromDate(LocalDate.of(2021,04,26));
-			card2.setThruDate(LocalDate.of(2021,04,26).plusYears(5));
-			card2.setCardType(CardType.CREDIT);
-			card2.setCvv(750);
+			Card card2 = new Card("2234 6745 552 7888", client1, LocalDate.of(2022,04,26), LocalDate.of(2021,04,26).plusYears(5), 750, CardType.DEBIT, CardColor.TITANIUM);
 
 			cardRepository.save(card2);
 
