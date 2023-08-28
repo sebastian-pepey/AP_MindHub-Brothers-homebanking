@@ -41,13 +41,14 @@ Vue.createApp({
         },
         // code to post a new client using AJAX
         // on success, reload and display the updated data from the server
-        postClient(email, firstName, lastName) {
-            axios.post("/api/clients", { "email": email, "firstName": firstName, "lastName": lastName, "password": password })
-                .then((response) => {
-                    // handle success
-                    this.loadData();
-                    this.clearData();
-                })
+        postClient(email, firstName, lastName, password) {
+            let config = {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            }
+            axios.post('/api/clients', `firstName=${firstName}&lastName=${lastName}&email=${email}&password=${password}`, config)
+            .then(response => this.loadData())
                 .catch((error) => {
                     // handle error
                     alert("Error to create client: " + error)

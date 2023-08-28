@@ -46,6 +46,7 @@ public class ClientController {
             @RequestParam String lastName,
             @RequestParam String email,
             @RequestParam String password){
+        
         if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){
             return new ResponseEntity<>("Missing Data", HttpStatus.FORBIDDEN);
         }
@@ -95,7 +96,7 @@ public class ClientController {
 
             do {
                 newAccount.setAccountNumber("VIN"+String.format("%8d",Math.round(Math.random()*(99999999))));
-            }while((boolean) customUtils.exists("findByAccountNumber" , newAccount.getAccountNumber(), accountRepository));
+            }while(accountRepository.existsByAccountNumber(newAccount.getAccountNumber()));
 
             newAccount.setAccountBalance(0);
             currentClient.addAccount(newAccount);
@@ -136,8 +137,7 @@ public class ClientController {
                     newCardNumber.append(random.nextInt(10));
                 }
                 newCard.setNumber(String.valueOf(newCardNumber));
-                System.out.println(newCard.getNumber());
-            } while((boolean) customUtils.exists("findByNumber", newCard.getNumber(), cardRepository));
+            } while(cardRepository.findByNumber(newCard.getNumber()) != null);
 
             newCard.setFromDate(LocalDate.now());
             newCard.setThruDate(LocalDate.now().plusYears(5));
@@ -154,7 +154,6 @@ public class ClientController {
 
     @RequestMapping(value = "/clients/current/cards")
     public ResponseEntity<Object> showCards(Authentication authentication) {
-        System.out.println(clientRepository.findByEmail(authentication.getName()).getCards().stream().map( card -> new CardDTO(card)).collect(Collectors.toSet()));
         return new ResponseEntity<>(
                 clientRepository.findByEmail(authentication.getName()).getCards().stream().map( card -> new CardDTO(card)).collect(Collectors.toSet())
                 ,HttpStatus.OK);
