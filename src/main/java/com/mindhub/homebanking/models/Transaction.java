@@ -28,6 +28,17 @@ public class Transaction {
     @JoinColumn(name = "accountId")
     private Account account;
 
+    public Transaction() {
+    }
+
+    public Transaction(double amount, LocalDateTime date, String description, TransactionType type, Account account) {
+        this.amount = amount;
+        this.date = date;
+        this.description = description;
+        this.type = type;
+        this.account = account;
+    }
+
     public Long getId() {
         return id;
     }

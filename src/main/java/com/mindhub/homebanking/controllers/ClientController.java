@@ -6,6 +6,7 @@ import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.CardRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.repositories.TransactionRepository;
 import com.mindhub.homebanking.utils.CustomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import com.mindhub.homebanking.dtos.ClientDTO;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,8 @@ public class ClientController {
     @Autowired
     private CardRepository cardRepository;
     @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/clients")
@@ -46,6 +51,7 @@ public class ClientController {
             @RequestParam String lastName,
             @RequestParam String email,
             @RequestParam String password){
+
         if(firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()){
             return new ResponseEntity<>("Missing Data", HttpStatus.FORBIDDEN);
         }
@@ -84,7 +90,7 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/clients/current/accounts", method = RequestMethod.POST)
-    public ResponseEntity<Object> addAccount(Authentication authentication) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+    public ResponseEntity<Object> addAccount(Authentication authentication) {
 
         Client currentClient = clientRepository.findByEmail(authentication.getName());
         if(currentClient.getAccounts().size() < 3 ){
@@ -95,7 +101,7 @@ public class ClientController {
 
             do {
                 newAccount.setAccountNumber("VIN"+String.format("%8d",Math.round(Math.random()*(99999999))));
-            }while((boolean) customUtils.exists("findByAccountNumber" , newAccount.getAccountNumber(), accountRepository));
+            }while(accountRepository.existsByAccountNumber(newAccount.getAccountNumber()));
 
             newAccount.setAccountBalance(0);
             currentClient.addAccount(newAccount);
@@ -117,7 +123,7 @@ public class ClientController {
     @RequestMapping(value = "/clients/current/cards", method = RequestMethod.POST)
     public ResponseEntity<Object> addCards(Authentication authentication,
                                            @RequestParam String cardType,
-                                           @RequestParam String cardColor) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
+                                           @RequestParam String cardColor) {
 
         Client currentClient = clientRepository.findByEmail(authentication.getName());
         CustomUtils customUtils = new CustomUtils();
@@ -136,8 +142,7 @@ public class ClientController {
                     newCardNumber.append(random.nextInt(10));
                 }
                 newCard.setNumber(String.valueOf(newCardNumber));
-                System.out.println(newCard.getNumber());
-            } while((boolean) customUtils.exists("findByNumber", newCard.getNumber(), cardRepository));
+            } while(cardRepository.findByNumber(newCard.getNumber()) != null);
 
             newCard.setFromDate(LocalDate.now());
             newCard.setThruDate(LocalDate.now().plusYears(5));
@@ -154,10 +159,51 @@ public class ClientController {
 
     @RequestMapping(value = "/clients/current/cards")
     public ResponseEntity<Object> showCards(Authentication authentication) {
-        System.out.println(clientRepository.findByEmail(authentication.getName()).getCards().stream().map( card -> new CardDTO(card)).collect(Collectors.toSet()));
         return new ResponseEntity<>(
                 clientRepository.findByEmail(authentication.getName()).getCards().stream().map( card -> new CardDTO(card)).collect(Collectors.toSet())
                 ,HttpStatus.OK);
+    }
+@Transactional
+    @RequestMapping(value = "/transactions")
+    public ResponseEntity<Object> makeTransactions(
+            @RequestParam String fromAccountNumber,
+            @RequestParam String toAccountNumber,
+            @RequestParam String amount,
+            @RequestParam String description,
+            Authentication authentication){
+
+            if(fromAccountNumber.isEmpty() || toAccountNumber.isEmpty() || amount.isEmpty() || description.isEmpty()) {
+                return new ResponseEntity<>("One of the field inputs is empty",HttpStatus.FORBIDDEN);
+            }
+
+            if(fromAccountNumber.equals(toAccountNumber)){
+                return new ResponseEntity<>("Origin and destination accounts are the same",HttpStatus.FORBIDDEN);
+            }
+
+            if(!accountRepository.findByAccountNumber(fromAccountNumber).getClient().equals(clientRepository.findByEmail(authentication.getName()))){
+                return new ResponseEntity<>("The Authenticated Client doesn't own the Account",HttpStatus.FORBIDDEN);
+            }
+
+            if(!accountRepository.existsByAccountNumber(toAccountNumber)) {
+                return new ResponseEntity<>("Destination Account doesn't exist",HttpStatus.FORBIDDEN);
+            }
+
+            if(accountRepository.findByAccountNumber(fromAccountNumber).getAccountBalance()<Double.parseDouble(amount)) {
+                return new ResponseEntity<>("The Client doesn't have enough funds.",HttpStatus.FORBIDDEN);
+            }
+
+            Account accountFrom = accountRepository.findByAccountNumber(fromAccountNumber);
+            Account accountTo = accountRepository.findByAccountNumber(toAccountNumber);
+
+            accountFrom.setAccountBalance(accountFrom.getAccountBalance()-Double.parseDouble(amount));
+            Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description, TransactionType.DEBIT, accountFrom );
+            accountTo.setAccountBalance(accountTo.getAccountBalance()+Double.parseDouble(amount));
+            Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description, TransactionType.CREDIT, accountTo );
+
+            transactionRepository.save(transactionFrom);
+            transactionRepository.save(transactionTo);
+
+    return new ResponseEntity<>("Transaction Created",HttpStatus.CREATED);
     }
 
 }
