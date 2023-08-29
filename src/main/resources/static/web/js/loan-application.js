@@ -19,6 +19,7 @@ Vue.createApp({
                 .then((response) => {
                     //get loan types ifo
                     this.loanTypes = response[0].data;
+                    console.log(this.loanTypes);
                     this.clientAccounts = response[1].data;
                 })
                 .catch((error) => {

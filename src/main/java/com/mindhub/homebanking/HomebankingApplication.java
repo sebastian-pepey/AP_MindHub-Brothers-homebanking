@@ -31,22 +31,14 @@ public class HomebankingApplication {
 	@Bean
 	public CommandLineRunner init(ClientRepository clientRepository,
 								  AccountRepository accountRepository,
-								  TransactionRepository transactionRepository,
 								  LoanRepository loanRepository,
-								  ClientLoanRepository clientLoanRepository,
 								  CardRepository cardRepository) {
 		return args -> {
 
 			Client client1 = new Client("Melba","Morel","melbamorel@gmail.com", passwordEncoder.encode("oreo123"), ClientAuthority.CLIENT);
-
 			clientRepository.save(client1);
 
-			Client client2 = new Client("Capitan","Beto","capitanbeto@gmail.com", passwordEncoder.encode("pass_invisible"), ClientAuthority.CLIENT);
-
-			clientRepository.save(client2);
-
 			Client admin = new Client("admin","admin","admin@admin.com", passwordEncoder.encode("verruckt"), ClientAuthority.ADMIN);
-
 			clientRepository.save(admin);
 
 			// Create Account 1
@@ -58,7 +50,6 @@ public class HomebankingApplication {
 			account1.setAccountBalance(5000);
 
 			client1.addAccount(account1);
-
 			accountRepository.save(account1);
 
 			// Create Account 2
@@ -69,42 +60,16 @@ public class HomebankingApplication {
 			account2.setAccountNumber("VIN002");
 			account2.setAccountBalance(7500);
 			client1.addAccount(account2);
-
 			accountRepository.save(account2);
-
-			// Create Transaction 1
-			Transaction transaction1 = new Transaction();
-
-			transaction1.setAmount(-500);
-			transaction1.setDate(LocalDateTime.now());
-			transaction1.setDescription("Compra alfajor");
-			transaction1.setType(TransactionType.DEBIT);
-			transaction1.addAccount(account1);
-
-			transactionRepository.save(transaction1);
-
-			// Create Transaction 2
-
-			Transaction transaction2 = new Transaction();
-
-			transaction2.setAmount(1000);
-			transaction2.setDate(LocalDateTime.now());
-			transaction2.setDescription("Venta alfajor");
-			transaction2.setType(TransactionType.CREDIT);
-			transaction2.addAccount(account1);
-
-			transactionRepository.save(transaction2);
 
 			loanRepository.save(new Loan("Hipotecario", 500000, List.of(12,24,36,48,60)));
 			loanRepository.save(new Loan("Automotriz", 300000, List.of(6,12,24,36)));
 			loanRepository.save(new Loan("Personal", 100000, List.of(6,12,24)));
 
 			Card card1 = new Card("3325 6745 7876 4445", client1, LocalDate.of(2023,04,26), LocalDate.of(2021,04,26).plusYears(5), 990, CardType.DEBIT, CardColor.GOLD);
-
 			cardRepository.save(card1);
 
 			Card card2 = new Card("2234 6745 552 7888", client1, LocalDate.of(2022,04,26), LocalDate.of(2021,04,26).plusYears(5), 750, CardType.DEBIT, CardColor.TITANIUM);
-
 			cardRepository.save(card2);
 
 		};

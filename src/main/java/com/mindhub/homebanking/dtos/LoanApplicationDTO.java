@@ -1,30 +1,37 @@
 package com.mindhub.homebanking.dtos;
 import com.mindhub.homebanking.models.ClientLoan;
+import com.mindhub.homebanking.models.Loan;
+
+import javax.persistence.ElementCollection;
+import java.util.List;
 
 public class LoanApplicationDTO {
 
-    private Long loanTypeId;
-    private double amount;
-    private int payments;
-    private String destinationAccount;
+    private Long id;
+    private String name;
+    private double maxAmount;
+    private List<Integer> payments;
 
-    public LoanApplicationDTO(ClientLoan clientLoan) {
-        this.loanTypeId = clientLoan.getLoan().getId();
-        this.amount = clientLoan.getAmount();
-        this.payments = clientLoan.getPayments();
-        //this.destinationAccount = destinationAccount;
+    public LoanApplicationDTO(Loan loan) {
+        this.id = loan.getId();
+        this.name = loan.getName();
+        this.maxAmount = loan.getMaxAmount();
+        this.payments = loan.getPayments();
     }
 
-    public Long getLoanTypeId() {
-        return loanTypeId;
+    public Long getId() {
+        return id;
     }
-    public double getAmount() {
-        return amount;
+
+    public String getName() {
+        return name;
     }
-    public int getPayments() {
+
+    public double getMaxAmount() {
+        return maxAmount;
+    }
+
+    public List<Integer> getPayments() {
         return payments;
-    }
-    public String getDestinationAccount() {
-        return destinationAccount;
     }
 }
