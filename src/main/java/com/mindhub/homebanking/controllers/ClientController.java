@@ -164,7 +164,7 @@ public class ClientController {
                 ,HttpStatus.OK);
     }
 @Transactional
-    @RequestMapping(value = "/transactions")
+    @RequestMapping(value = "/transactions", method = RequestMethod.POST)
     public ResponseEntity<Object> makeTransactions(
             @RequestParam String fromAccountNumber,
             @RequestParam String toAccountNumber,

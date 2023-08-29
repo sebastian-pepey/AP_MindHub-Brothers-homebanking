@@ -8,4 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 // a emplear.
 
 public interface ClientLoanRepository extends JpaRepository<ClientLoan, Long> {
+
+    ClientLoan findByClient(long client_id);
+
 }

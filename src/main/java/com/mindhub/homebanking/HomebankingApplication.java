@@ -95,47 +95,9 @@ public class HomebankingApplication {
 
 			transactionRepository.save(transaction2);
 
-			Loan loan1 = new Loan();
-
-			loan1.setName("Hipotecario");
-			loan1.setMaxAmount(500000);
-			loan1.setPayments(List.of(12,24,36,48,60));
-
-			loanRepository.save(loan1);
-
-			// Se crean primero los préstamos y los clientes, luego se emplea el constructor para
-			// crear la instancia de la entidad intermedia (tabla pivote en la DB).
-
-			ClientLoan clientLoan1 = new ClientLoan(client1, loan1,400000,60);
-
-			clientLoan1.setClient(client1);
-			clientLoan1.setLoan(loan1);
-
-			clientLoanRepository.save(clientLoan1);
-
-			Loan loan2 = new Loan();
-
-			loan2.setName("Personal");
-			loan2.setMaxAmount(100000);
-			loan2.setPayments(List.of(6,12,24));
-
-			loanRepository.save(loan2);
-
-			ClientLoan clientLoan2 = new ClientLoan(client1, loan2,50000,12);
-
-			clientLoanRepository.save(clientLoan2);
-
-			Loan loan3 = new Loan();
-
-			loan3.setName("Automotriz");
-			loan3.setMaxAmount(300000);
-			loan3.setPayments(List.of(6,12,24,36));
-
-			loanRepository.save(loan3);
-
-			ClientLoan clientLoan3 = new ClientLoan(client2, loan3,50000,36);
-
-			clientLoanRepository.save(clientLoan3);
+			loanRepository.save(new Loan("Hipotecario", 500000, List.of(12,24,36,48,60)));
+			loanRepository.save(new Loan("Automotriz", 300000, List.of(6,12,24,36)));
+			loanRepository.save(new Loan("Personal", 100000, List.of(6,12,24)));
 
 			Card card1 = new Card("3325 6745 7876 4445", client1, LocalDate.of(2023,04,26), LocalDate.of(2021,04,26).plusYears(5), 990, CardType.DEBIT, CardColor.GOLD);
 
