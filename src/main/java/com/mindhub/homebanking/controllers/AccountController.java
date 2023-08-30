@@ -2,6 +2,7 @@ package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.repositories.AccountRepository;
+import com.mindhub.homebanking.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +16,15 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @RequestMapping("/accounts")
     private List<AccountDTO> getAccounts(){
-        return accountRepository.findAll().stream().map( account -> new AccountDTO(account)).collect(Collectors.toList());
+        return accountService.getAccounts();
     }
 
     @RequestMapping("/accounts/{id}")
     private AccountDTO getAccountById(@PathVariable Long id) {
-        return new AccountDTO(accountRepository.findById(id).orElse(null));
+        return accountService.getAccountById(id);
     }
 }
