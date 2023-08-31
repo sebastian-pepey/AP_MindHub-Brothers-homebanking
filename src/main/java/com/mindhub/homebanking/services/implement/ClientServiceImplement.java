@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +38,14 @@ public class ClientServiceImplement implements ClientService {
     private TransactionRepository transactionRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    public void changeAuthority(@RequestParam String email) {
+        Client client=clientRepository.findByEmail(email);
+        client.setClientAuthority(ClientAuthority.ADMIN);
+        clientRepository.save(client);
+    }
+
     @Override
     public ResponseEntity<Object> getClients(){
         return new ResponseEntity<>(clientRepository.findAll().stream().map( client -> new ClientDTO(client)).collect(Collectors.toList()), HttpStatus.OK);
@@ -62,28 +71,18 @@ public class ClientServiceImplement implements ClientService {
     }
 
     @Override
+    public ClientDTO getClient(@PathVariable long id){
+        return new ClientDTO(clientRepository.findById(id));
+    }
+
+    @Override
     public ClientDTO getConnectedClient(Authentication authentication) {
         return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
     }
 
     @Override
-    public ResponseEntity<Object> getClient(@PathVariable long id){
-        //ClientDTO getClient(@PathVariable long id) {
-        //return new ClientDTO(clientRepository.findById(id));
-        return new ResponseEntity<>("El recurso solicitado no existe más | The requested resource no longer exists | Die angeforderte Ressource existiert nicht mehr",HttpStatus.GONE);
-    }
-
-    @Override
-    public boolean isAdmin(Authentication auth) {
-        return clientRepository.findByEmail(auth.getName()).getClientAuthority().name().equals("ADMIN");
-    }
-
-    @Override
-    public ResponseEntity<Object> changeAuthority(@RequestParam String email) {
-        Client client=clientRepository.findByEmail(email);
-        client.setClientAuthority(ClientAuthority.ADMIN);
-        clientRepository.save(client);
-        return new ResponseEntity<>("Authority Changed", HttpStatus.OK);
+    public Set<AccountDTO> showAccounts(Authentication authentication) {
+        return clientRepository.findByEmail(authentication.getName()).getAccounts().stream().map( account -> new AccountDTO(account)).collect(Collectors.toSet());
     }
 
     @Override
@@ -110,12 +109,7 @@ public class ClientServiceImplement implements ClientService {
             return new ResponseEntity<>("The client can't create more than 3 accounts",HttpStatus.FORBIDDEN);
         }
     }
-    @Override
-    public ResponseEntity<Object> showAccounts(Authentication authentication) {
-        return new ResponseEntity<>(
-                clientRepository.findByEmail(authentication.getName()).getAccounts().stream().map( account -> new AccountDTO(account)).collect(Collectors.toSet())
-                ,HttpStatus.OK);
-    }
+
 
     @Override
     public ResponseEntity<Object> addCards(Authentication authentication,
@@ -192,14 +186,19 @@ public class ClientServiceImplement implements ClientService {
         Account accountTo = accountRepository.findByAccountNumber(toAccountNumber);
 
         accountFrom.setAccountBalance(accountFrom.getAccountBalance()-Double.parseDouble(amount));
-        Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description, TransactionType.DEBIT, accountFrom );
+        Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
         accountTo.setAccountBalance(accountTo.getAccountBalance()+Double.parseDouble(amount));
-        Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description, TransactionType.CREDIT, accountTo );
+        Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
 
         transactionRepository.save(transactionFrom);
         transactionRepository.save(transactionTo);
 
         return new ResponseEntity<>("Transaction Created",HttpStatus.CREATED);
+    }
+
+    @Override
+    public boolean isAdmin(Authentication auth) {
+        return clientRepository.findByEmail(auth.getName()).getClientAuthority().name().equals("ADMIN");
     }
 
 }

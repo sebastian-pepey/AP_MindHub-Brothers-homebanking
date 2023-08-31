@@ -7,31 +7,28 @@ import java.util.List;
 
 public class LoanApplicationDTO {
 
-    private Long id;
-    private String name;
-    private double maxAmount;
-    private List<Integer> payments;
+    private String loanId;
+    private String amount;
+    private String payments;
+    private String toAccountNumber;
 
-    public LoanApplicationDTO(Loan loan) {
-        this.id = loan.getId();
-        this.name = loan.getName();
-        this.maxAmount = loan.getMaxAmount();
-        this.payments = loan.getPayments();
+    public LoanApplicationDTO() {
     }
 
-    public Long getId() {
-        return id;
+    public String getLoanId() {
+        return loanId;
     }
 
-    public String getName() {
-        return name;
+    public String getAmount() {
+        return amount;
     }
 
-    public double getMaxAmount() {
-        return maxAmount;
-    }
-
-    public List<Integer> getPayments() {
+    public String getPayments() {
         return payments;
     }
+
+    public String getToAccountNumber() {
+        return toAccountNumber;
+    }
 }
+

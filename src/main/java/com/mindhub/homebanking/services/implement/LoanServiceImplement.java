@@ -1,11 +1,7 @@
 package com.mindhub.homebanking.services.implement;
-
-import com.mindhub.homebanking.controllers.LoansController;
 import com.mindhub.homebanking.dtos.LoanApplicationDTO;
-import com.mindhub.homebanking.models.Account;
-import com.mindhub.homebanking.models.ClientLoan;
-import com.mindhub.homebanking.models.Transaction;
-import com.mindhub.homebanking.models.TransactionType;
+import com.mindhub.homebanking.dtos.LoanDTO;
+import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
 import com.mindhub.homebanking.services.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 @Service
 public class LoanServiceImplement implements LoanService {
 
@@ -32,7 +29,7 @@ public class LoanServiceImplement implements LoanService {
     private ClientLoanRepository clientLoanRepository;
 
     @Override
-    public ResponseEntity<Object> applyForLoan(@RequestBody LoansController.LoanParameters loanBody, Authentication authentication){
+    public ResponseEntity<Object> applyForLoan(@RequestBody LoanApplicationDTO loanBody, Authentication authentication){
 
         if(loanBody.getLoanId().isEmpty() || loanBody.getAmount().isEmpty() || Double.parseDouble(loanBody.getAmount()) == 0 || loanBody.getPayments().isEmpty() || Double.parseDouble(loanBody.getPayments()) == 0 || loanBody.getToAccountNumber().isEmpty()) {
             return new ResponseEntity<>("One of the field inputs is empty", HttpStatus.FORBIDDEN);
@@ -71,7 +68,7 @@ public class LoanServiceImplement implements LoanService {
     }
     @Override
     public ResponseEntity<Object> showLoans(){
-        Set<LoanApplicationDTO> loans = loanRepository.findAll().stream().map(loan -> new LoanApplicationDTO(loan)).collect(Collectors.toSet());
+        Set<LoanDTO> loans = loanRepository.findAll().stream().map( loan -> new LoanDTO(loan)).collect(Collectors.toSet());
         return new ResponseEntity<>(loans,HttpStatus.OK);
     }
 }
