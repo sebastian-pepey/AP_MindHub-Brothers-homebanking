@@ -20,7 +20,6 @@ Vue.createApp({
                 }
             }
             axios.post('/api/login', `email=${this.email}&password=${this.password}`, config)
-                .then(response => axios.get('/api/validation'))
                 .then(response => {
                     if(!response.data){
                             window.location.href = "/web/accounts.html";

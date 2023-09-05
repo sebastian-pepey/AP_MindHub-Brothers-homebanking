@@ -35,6 +35,12 @@ public class Account {
 
     public Account() { }
 
+    public Account(String accountNumber, LocalDate creationDate, double accountBalance) {
+        this.accountNumber = accountNumber;
+        this.creationDate = creationDate;
+        this.accountBalance = accountBalance;
+    }
+
     public Long getId() {
         return id;
     }
