@@ -2,10 +2,7 @@ package com.mindhub.homebanking.services.implement;
 import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.dtos.ClientDTO;
 import com.mindhub.homebanking.models.*;
-import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.CardRepository;
-import com.mindhub.homebanking.repositories.ClientRepository;
-import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.repositories.*;
 import com.mindhub.homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +29,8 @@ public class ClientServiceImplement implements ClientService {
     private CardRepository cardRepository;
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private ClientLoanRepository clientLoanRepository;
 
     @Override
     public void changeAuthority(@RequestParam String email) {
@@ -63,5 +62,10 @@ public class ClientServiceImplement implements ClientService {
     @Override
     public void saveInRepository(Client client) {
         clientRepository.save(client);
+    }
+
+    @Override
+    public void saveCLInRepository(ClientLoan clientLoan) {
+        clientLoanRepository.save(clientLoan);
     }
 }

@@ -1,11 +1,15 @@
 package com.mindhub.homebanking.services;
-import com.mindhub.homebanking.controllers.LoansController;
-import com.mindhub.homebanking.dtos.LoanApplicationDTO;
+import com.mindhub.homebanking.dtos.LoanDTO;
+import com.mindhub.homebanking.models.Loan;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Set;
 
 public interface LoanService {
-    ResponseEntity<Object> applyForLoan(@RequestBody LoanApplicationDTO loanBody, Authentication authentication);
-    ResponseEntity<Object> showLoans();
+
+    boolean existsById(Long id);
+
+    Loan findById(long id);
+
+    Set<LoanDTO> showLoans();
 }

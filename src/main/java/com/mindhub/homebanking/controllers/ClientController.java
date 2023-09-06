@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import com.mindhub.homebanking.dtos.ClientDTO;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController

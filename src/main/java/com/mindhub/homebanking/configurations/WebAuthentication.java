@@ -23,7 +23,6 @@ public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService( inputEmail -> {
             Client client = clientRepository.findByEmail(inputEmail);
-            //System.out.println(client);
             if (client != null) {
                 return new User(client.getEmail(), client.getPassword(), AuthorityUtils.createAuthorityList(client.getClientAuthority().name()));
             } else {

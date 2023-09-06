@@ -1,6 +1,8 @@
 package com.mindhub.homebanking.services;
 import com.mindhub.homebanking.dtos.ClientDTO;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.ClientLoan;
+import com.mindhub.homebanking.models.Loan;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,4 +16,5 @@ public interface ClientService {
     ClientDTO getConnectedClient(Authentication authentication);
     Client findByEmail(String email);
     void saveInRepository(Client client);
+    void saveCLInRepository(ClientLoan clientLoan);
 }

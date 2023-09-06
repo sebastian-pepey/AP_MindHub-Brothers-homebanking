@@ -8,6 +8,7 @@ public class Utils {
 
     public String generateRandomCardNumber(){
         Random random = new Random();
-        return String.format("%4s%5s%5s%5s", String.valueOf(Math.abs(random.nextLong())).substring(0,16).split("(?<=\\G....)"));
+        String[] cardNumbers = {String.valueOf(random.nextInt(8999)+1000),String.valueOf(random.nextInt(8999)+1000),String.valueOf(random.nextInt(8999)+1000),String.valueOf(random.nextInt(8999)+1000)};
+        return String.join(" ",cardNumbers);
     }
 }

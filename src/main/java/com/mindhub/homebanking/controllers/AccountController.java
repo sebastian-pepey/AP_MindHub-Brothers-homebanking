@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -36,13 +37,13 @@ public class AccountController {
     }
 
     @RequestMapping("/accounts/{id}")
-    public ResponseEntity<Object> getAccountById(@PathVariable Long id) {
-        return new ResponseEntity<>(accountService.getAccountById(id),HttpStatus.OK);
+    public AccountDTO getAccountById(@PathVariable Long id) {
+        return accountService.getAccountById(id);
     }
 
     @RequestMapping(value = "/clients/current/accounts")
-    public ResponseEntity<Object> showAccounts(Authentication authentication) {
-        return new ResponseEntity<>(accountService.showAccounts(authentication),HttpStatus.OK);
+    public Set<AccountDTO> showAccounts(Authentication authentication) {
+        return accountService.showAccounts(authentication);
     }
 
     @RequestMapping(value = "/clients/current/accounts", method = RequestMethod.POST)
@@ -76,8 +77,6 @@ public class AccountController {
             @RequestParam String description,
             Authentication authentication){
 
-        System.out.println("dentro de transacciones");
-
             if(fromAccountNumber.isEmpty() || toAccountNumber.isEmpty() || amount.isEmpty() || description.isEmpty()) {
                 return new ResponseEntity<>("One of the field inputs is empty",HttpStatus.FORBIDDEN);
             }
@@ -102,9 +101,9 @@ public class AccountController {
             Account accountTo = accountService.findByAccountNumber(toAccountNumber);
 
             accountFrom.setAccountBalance(accountFrom.getAccountBalance()-Double.parseDouble(amount));
-            Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit to account " + accountFrom.getAccountNumber() + " " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
+            Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " to " + accountTo.getClient().getFirstName() + " " + accountTo.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
             accountTo.setAccountBalance(accountTo.getAccountBalance()+Double.parseDouble(amount));
-            Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Transfer from " +  accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
+            Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Transfer into account " +  accountTo.getAccountNumber() + " from " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
 
             transactionService.saveInRepository(transactionFrom);
             transactionService.saveInRepository(transactionTo);
