@@ -32,7 +32,8 @@ public class AccountController {
     private TransactionService transactionService;
 
     @RequestMapping("/accounts")
-    private List<AccountDTO> getAccounts(){
+    public List<AccountDTO> getAccounts(){
+        System.out.println("DENTRO DE GET ACCOUNTS");
         return accountService.getAccounts();
     }
 

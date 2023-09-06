@@ -18,7 +18,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-
 @RestController
 @RequestMapping(value = "/api")
 public class LoansController {

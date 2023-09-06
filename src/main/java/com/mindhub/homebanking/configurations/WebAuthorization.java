@@ -1,6 +1,7 @@
 package com.mindhub.homebanking.configurations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -16,12 +17,13 @@ public class WebAuthorization {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                        .antMatchers("/**").permitAll();
-                /*.antMatchers(HttpMethod.POST,"/api/clients/current/accounts","/api/clients/current/cards").permitAll()
-                .antMatchers("/api/validation","/web/img/**","/web/index.html","/web/css/style.css","/web/js/index.js").permitAll()
-                .antMatchers("/api/clients","/manager.html","/manager.js","/rest/**","/h2-console/**").hasAuthority("ADMIN")
-                .antMatchers("/web/**","/api/loans","/api/clients/**","/api/clients/current/**").hasAuthority("CLIENT")
-                .anyRequest().denyAll();*/
+                .antMatchers("/web/index.html","/web/css/style.css","/web/js/index.js","/web/img/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/clients").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/loans","/api/clients/current/accounts","/api/clients/current/cards").hasAuthority("CLIENT")
+                .antMatchers("/api/loans","/api/transactions","/api/clients/current/**").hasAuthority("CLIENT")
+                .antMatchers("/api/clients/**","/api/accounts/**","/manager.html","/manager.js","/rest/**","/h2-console/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PATCH,"/api/changeAuthority").hasAuthority("ADMIN")
+                .anyRequest().authenticated();
 
         http.formLogin()
                 .usernameParameter("email")
@@ -40,26 +42,24 @@ public class WebAuthorization {
         //disabling frameOptions so h2-console can be accessed
         http.headers().frameOptions().disable();
 
+        http.exceptionHandling().accessDeniedHandler((req, res, exc) -> {
+            res.sendRedirect("/web/access-denied.html");
+        });
+
         // if user is not authenticated, just send an authentication failure response
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> {
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            //System.out.println(req.getMethod()+" "+req.getRequestURL()+" "+res.getStatus());
-            //System.out.println("Usuario no autorizado");
-            //System.out.println(exc.toString());
+            //res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            res.sendRedirect("/web/index.html");
         });
 
         // if login is successful, just clear the flags asking for authentication
         http.formLogin().successHandler((req, res, auth) -> {
             clearAuthenticationAttributes(req);
-            //System.out.println(req.getMethod()+" "+req.getRequestURL()+" "+res.getStatus());
-            //System.out.println("Peticion aceptada");
         });
 
         // if login fails, just send an authentication failure response
         http.formLogin().failureHandler((req, res, exc) -> {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            //System.out.println(req.getMethod()+" "+req.getRequestURL()+" "+res.getStatus());
-            //System.out.println("Fallo de autenticacion del formulario");
         });
 
         // if logout is successful, just send a success response
