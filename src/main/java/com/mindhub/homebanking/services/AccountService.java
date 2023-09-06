@@ -8,7 +8,7 @@ import java.util.Set;
 
 public interface AccountService {
     List<AccountDTO> getAccounts();
-    AccountDTO getAccountById(@PathVariable Long id);
+    AccountDTO getAccountById(Long id);
     Set<AccountDTO> showAccounts(Authentication authentication);
     boolean existByAccountNumber(String accountNumber);
     Account findByAccountNumber(String accountNumber);

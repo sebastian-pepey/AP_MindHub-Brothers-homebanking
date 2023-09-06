@@ -37,12 +37,12 @@ public class CardController {
 
     @RequestMapping(value = "/clients/current/cards", method = RequestMethod.POST)
     public ResponseEntity<Object> addCards(Authentication authentication,
-                                           @RequestParam String cardType,
+                                           @RequestParam CardType cardType,
                                            @RequestParam String cardColor) {
 
         Client currentClient = clientService.findByEmail(authentication.getName());
 
-        if( cardService.countClientCards(currentClient,CardType.valueOf(cardType)) < 3) {
+        if( cardService.countClientCards(currentClient,cardType) < 3) {
             String newCardNumber;
             Random random = new Random();
             Utils utils = new Utils();
@@ -50,7 +50,7 @@ public class CardController {
                 newCardNumber = utils.generateRandomCardNumber();
             } while(cardService.findByNumber(newCardNumber) != null);
 
-            Card newCard = new Card(String.valueOf(newCardNumber), currentClient, LocalDate.now(), LocalDate.now().plusYears(5), random.nextInt(1000), CardType.valueOf(cardType), CardColor.valueOf(cardColor));
+            Card newCard = new Card(String.valueOf(newCardNumber), currentClient, LocalDate.now(), LocalDate.now().plusYears(5), random.nextInt(1000), cardType, CardColor.valueOf(cardColor));
             currentClient.addCard(newCard);
             cardService.saveInRepository(newCard);
             clientService.saveInRepository(currentClient);

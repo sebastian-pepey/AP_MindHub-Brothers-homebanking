@@ -4,7 +4,6 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.models.TransactionType;
-import com.mindhub.homebanking.repositories.TransactionRepository;
 import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.ClientService;
 import com.mindhub.homebanking.services.TransactionService;
@@ -19,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api")
 public class AccountController {
@@ -31,12 +31,12 @@ public class AccountController {
     private TransactionService transactionService;
 
     @RequestMapping("/accounts")
-    private ResponseEntity<Object> getAccounts(){
-        return new ResponseEntity<>("El recurso solicitado no existe más | The requested resource no longer exists | Die angeforderte Ressource existiert nicht mehr", HttpStatus.GONE);
+    private List<AccountDTO> getAccounts(){
+        return accountService.getAccounts();
     }
 
     @RequestMapping("/accounts/{id}")
-    private ResponseEntity<Object> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<Object> getAccountById(@PathVariable Long id) {
         return new ResponseEntity<>(accountService.getAccountById(id),HttpStatus.OK);
     }
 
@@ -49,7 +49,6 @@ public class AccountController {
     public ResponseEntity<Object> addAccount(Authentication authentication) {
         Client currentClient = clientService.findByEmail(authentication.getName());
         if(currentClient.getAccounts().size() < 3 ){
-            //SERVICIO
             String accountNumberCandidate;
             do {
                 accountNumberCandidate = "VIN"+String.format("%8d",Math.round(Math.random()*(99999999)));
@@ -77,6 +76,8 @@ public class AccountController {
             @RequestParam String description,
             Authentication authentication){
 
+        System.out.println("dentro de transacciones");
+
             if(fromAccountNumber.isEmpty() || toAccountNumber.isEmpty() || amount.isEmpty() || description.isEmpty()) {
                 return new ResponseEntity<>("One of the field inputs is empty",HttpStatus.FORBIDDEN);
             }
@@ -101,9 +102,9 @@ public class AccountController {
             Account accountTo = accountService.findByAccountNumber(toAccountNumber);
 
             accountFrom.setAccountBalance(accountFrom.getAccountBalance()-Double.parseDouble(amount));
-            Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
+            Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit to account " + accountFrom.getAccountNumber() + " " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
             accountTo.setAccountBalance(accountTo.getAccountBalance()+Double.parseDouble(amount));
-            Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
+            Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Transfer from " +  accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
 
             transactionService.saveInRepository(transactionFrom);
             transactionService.saveInRepository(transactionTo);
