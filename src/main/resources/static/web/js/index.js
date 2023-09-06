@@ -21,11 +21,8 @@ Vue.createApp({
             }
             axios.post('/api/login', `email=${this.email}&password=${this.password}`, config)
                 .then(response => {
-                    if(!response.data){
-                            window.location.href = "/web/accounts.html";
-                        } else {
-                            window.location.href = "/manager.html";
-                        }
+                    console.log(response);
+    
                 })
                 .catch(() => {
                     this.errorMsg = "Sign in failed, check the information"
