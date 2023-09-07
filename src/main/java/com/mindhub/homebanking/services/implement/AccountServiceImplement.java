@@ -30,6 +30,11 @@ public class AccountServiceImplement implements AccountService {
     }
 
     @Override
+    public AccountDTO getAuthClientAccountById(Long id) {
+        return new AccountDTO(accountRepository.findById(id).orElse(null));
+    }
+
+    @Override
     public Set<AccountDTO> showAccounts(Authentication authentication) {
         return clientRepository.findByEmail(authentication.getName()).getAccounts().stream().map( account -> new AccountDTO(account)).collect(Collectors.toSet());
     }

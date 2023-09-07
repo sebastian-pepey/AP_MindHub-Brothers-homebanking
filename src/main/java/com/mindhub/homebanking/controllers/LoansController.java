@@ -39,19 +39,23 @@ public class LoansController {
     @RequestMapping(value = "/loans", method = RequestMethod.POST)
     public ResponseEntity<Object> applyForLoan(@RequestBody LoanApplicationDTO loanBody, Authentication authentication){
 
-        if(loanBody.getLoanId().isEmpty() || loanBody.getAmount().isEmpty() || Double.parseDouble(loanBody.getAmount()) == 0 || loanBody.getPayments().isEmpty() || Double.parseDouble(loanBody.getPayments()) == 0 || loanBody.getToAccountNumber().isEmpty()) {
+        if(loanBody.getLoanId() == null || loanBody.getAmount() == null || loanBody.getPayments() == null  || loanBody.getToAccountNumber() == null) {
             return new ResponseEntity<>("One of the field inputs is empty", HttpStatus.FORBIDDEN);
         }
 
-        if(!loanService.existsById(Long.parseLong(loanBody.getLoanId()))){
+        if(Double.compare(loanBody.getAmount(),0)  <= 0 || Double.compare(loanBody.getPayments(),0) <= 0) {
+            return new ResponseEntity<>("One of the numeric values is incorrect", HttpStatus.FORBIDDEN);
+        }
+
+        if(!loanService.existsById(loanBody.getLoanId())){
             return new ResponseEntity<>("The selected Loan type doesn't exist",HttpStatus.FORBIDDEN);
         }
 
-        if(loanService.findById(Long.parseLong(loanBody.getLoanId())).getMaxAmount() < Double.parseDouble(loanBody.getAmount())){
+        if(loanService.findById(loanBody.getLoanId()).getMaxAmount() < loanBody.getAmount()){
             return new ResponseEntity<>("The value requested is more than this Loan's available ",HttpStatus.FORBIDDEN);
         }
 
-        if(!loanService.findById(Long.parseLong(loanBody.getLoanId())).getPayments().contains(Integer.parseInt(loanBody.getPayments()))){
+        if(!loanService.findById(loanBody.getLoanId()).getPayments().contains(loanBody.getPayments())){
             return new ResponseEntity<>("The amount of Payments required is not available",HttpStatus.FORBIDDEN);
         }
 
@@ -64,10 +68,10 @@ public class LoansController {
         }
 
         Account accountTo = accountService.findByAccountNumber(loanBody.getToAccountNumber());
-        ClientLoan newLoan = new ClientLoan(clientService.findByEmail(authentication.getName()),loanService.findById(Long.parseLong(loanBody.getLoanId())),Double.parseDouble(loanBody.getAmount()),Integer.parseInt(loanBody.getPayments()));
+        ClientLoan newLoan = new ClientLoan(clientService.findByEmail(authentication.getName()),loanService.findById(loanBody.getLoanId()),loanBody.getAmount(),loanBody.getPayments());
 
-        accountTo.setAccountBalance(accountTo.getAccountBalance()+Double.parseDouble(loanBody.getAmount()));
-        Transaction transactionLoan = new Transaction(Double.parseDouble(loanBody.getAmount()), LocalDateTime.now(), "Loan approved", TransactionType.CREDIT, accountTo );
+        accountTo.setAccountBalance(accountTo.getAccountBalance()+loanBody.getAmount());
+        Transaction transactionLoan = new Transaction(loanBody.getAmount(), LocalDateTime.now(), "Loan approved", TransactionType.CREDIT, accountTo );
 
         transactionService.saveInRepository(transactionLoan);
         clientService.saveCLInRepository(newLoan);

@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-
 @RestController
 @RequestMapping("/api")
 public class AccountController {
@@ -39,6 +38,11 @@ public class AccountController {
     @RequestMapping("/accounts/{id}")
     public AccountDTO getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id);
+    }
+
+    @RequestMapping("/clients/current/accounts/{id}")
+    public AccountDTO getAuthClientAccountById(@PathVariable Long id) {
+        return accountService.getAuthClientAccountById(id);
     }
 
     @RequestMapping(value = "/clients/current/accounts")
@@ -73,12 +77,16 @@ public class AccountController {
     public ResponseEntity<Object> makeTransactions(
             @RequestParam String fromAccountNumber,
             @RequestParam String toAccountNumber,
-            @RequestParam String amount,
+            @RequestParam Double amount,
             @RequestParam String description,
             Authentication authentication){
 
-            if(fromAccountNumber.isEmpty() || toAccountNumber.isEmpty() || amount.isEmpty() || description.isEmpty()) {
+            if(fromAccountNumber.isEmpty() || toAccountNumber.isEmpty() || amount == null || description.isEmpty()) {
                 return new ResponseEntity<>("One of the field inputs is empty",HttpStatus.FORBIDDEN);
+            }
+
+            if( amount <= 0) {
+                return new ResponseEntity<>("The amount of the Transfer is zero or incorrect",HttpStatus.FORBIDDEN);
             }
 
             if(fromAccountNumber.equals(toAccountNumber)){
@@ -93,17 +101,17 @@ public class AccountController {
                 return new ResponseEntity<>("Destination Account doesn't exist",HttpStatus.FORBIDDEN);
             }
 
-            if(accountService.findByAccountNumber(fromAccountNumber).getAccountBalance()<Double.parseDouble(amount)) {
+            if(accountService.findByAccountNumber(fromAccountNumber).getAccountBalance()<amount) {
                 return new ResponseEntity<>("The Client doesn't have enough funds.",HttpStatus.FORBIDDEN);
             }
 
             Account accountFrom = accountService.findByAccountNumber(fromAccountNumber);
             Account accountTo = accountService.findByAccountNumber(toAccountNumber);
 
-            accountFrom.setAccountBalance(accountFrom.getAccountBalance()-Double.parseDouble(amount));
-            Transaction transactionFrom = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " to " + accountTo.getClient().getFirstName() + " " + accountTo.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
-            accountTo.setAccountBalance(accountTo.getAccountBalance()+Double.parseDouble(amount));
-            Transaction transactionTo = new Transaction(Double.parseDouble(amount), LocalDateTime.now(), description + " - Transfer into account " +  accountTo.getAccountNumber() + " from " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
+            accountFrom.setAccountBalance(accountFrom.getAccountBalance()-amount);
+            Transaction transactionFrom = new Transaction(amount, LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " to " + accountTo.getClient().getFirstName() + " " + accountTo.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
+            accountTo.setAccountBalance(accountTo.getAccountBalance()+amount);
+            Transaction transactionTo = new Transaction(amount, LocalDateTime.now(), description + " - Transfer into account " +  accountTo.getAccountNumber() + " from " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
 
             transactionService.saveInRepository(transactionFrom);
             transactionService.saveInRepository(transactionTo);

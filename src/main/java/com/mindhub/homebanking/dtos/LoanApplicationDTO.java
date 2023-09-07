@@ -7,23 +7,23 @@ import java.util.List;
 
 public class LoanApplicationDTO {
 
-    private String loanId;
-    private String amount;
-    private String payments;
+    private Long loanId;
+    private Double amount;
+    private Integer payments;
     private String toAccountNumber;
 
     public LoanApplicationDTO() {
     }
 
-    public String getLoanId() {
+    public Long getLoanId() {
         return loanId;
     }
 
-    public String getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public String getPayments() {
+    public Integer getPayments() {
         return payments;
     }
 

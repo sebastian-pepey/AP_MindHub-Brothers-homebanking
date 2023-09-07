@@ -13,6 +13,7 @@ Vue.createApp({
             const id = urlParams.get('id');
             axios.get(`/api/accounts/${id}`)
                 .then((response) => {
+                    console.log(response.data);
                     //get client ifo
                     this.accountInfo = response.data;
                     this.accountInfo.transactions.sort((a, b) => parseInt(b.id - a.id))
