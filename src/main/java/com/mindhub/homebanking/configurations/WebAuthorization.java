@@ -4,15 +4,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @EnableWebSecurity
 @Configuration
@@ -21,13 +19,13 @@ public class WebAuthorization {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/web/index.html","/web/css/style.css","/web/js/index.js","/web/img/**").permitAll()
+                .antMatchers("/web/index.html","/web/css/**","/web/js/**","/web/img/**","/web/access-denied.html").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/clients").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/loans","/api/clients/current/accounts","/api/clients/current/cards").hasAuthority("CLIENT")
-                .antMatchers("/api/loans","/api/transactions","/api/clients/current/**").hasAuthority("CLIENT")
+                .antMatchers("/api/loans","/api/transactions","/api/clients/current/**","/web/**").hasAuthority("CLIENT")
                 .antMatchers("/api/clients/**","/api/accounts/**","/manager.html","/manager.js","/rest/**","/h2-console/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PATCH,"/api/changeAuthority").hasAuthority("ADMIN")
-                .anyRequest().authenticated();
+                .anyRequest().denyAll();
 
         http.formLogin()
                 .usernameParameter("email")
@@ -58,6 +56,7 @@ public class WebAuthorization {
 
         // if login is successful, just clear the flags asking for authentication
         http.formLogin().successHandler((req, res, auth) -> {
+            res.setHeader("userRole",auth.getAuthorities().toString());
             clearAuthenticationAttributes(req);
         });
 
