@@ -36,13 +36,13 @@ public class AccountController {
     }
 
     @RequestMapping("/accounts/{id}")
-    public AccountDTO getAccountById(@PathVariable Long id) {
-        return accountService.getAccountById(id);
-    }
-
-    @RequestMapping("/clients/current/accounts/{id}")
-    public AccountDTO getAuthClientAccountById(@PathVariable Long id) {
-        return accountService.getAuthClientAccountById(id);
+    public ResponseEntity<Object> getAuthClientAccountById(@PathVariable Long id, Authentication authentication) {
+        Account account = accountService.findByIdAndClient(id, clientService.findByEmail(authentication.getName()));
+        if (account != null) {
+            return new ResponseEntity<>(new AccountDTO(account), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Access Denied", HttpStatus.FORBIDDEN);
+        }
     }
 
     @RequestMapping(value = "/clients/current/accounts")

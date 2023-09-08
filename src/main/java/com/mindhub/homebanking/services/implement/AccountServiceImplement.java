@@ -1,6 +1,7 @@
 package com.mindhub.homebanking.services.implement;
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.models.Account;
+import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.services.AccountService;
@@ -45,6 +46,11 @@ public class AccountServiceImplement implements AccountService {
     @Override
     public Account findByAccountNumber(String accountNumber) {
         return accountRepository.findByAccountNumber(accountNumber);
+    }
+
+    @Override
+    public Account findByIdAndClient(Long id, Client client) {
+        return accountRepository.findByIdAndClient(id,client);
     }
 
     @Override
