@@ -30,7 +30,7 @@ public class HomebankingApplication {
 	// Dentro del método, se instancia la clase Cliente previamente creada, en este caso con parámetros
 	// correspondientes al cliente de prueba, y dicho objeto se guarda empleando el método save de la clase
 	// clientRepository creada la interfaz de repositorios (JPA).
-	@Bean
+	//@Bean
 	public CommandLineRunner init(ClientRepository clientRepository,
 								  AccountRepository accountRepository,
 								  LoanRepository loanRepository,
@@ -48,7 +48,8 @@ public class HomebankingApplication {
 			// Create Account 1
 
 			// Set attributes to Account 1
-			Account account1 = new Account(utils.generateRandomAccountNumber(), LocalDate.now(), 5000);
+			String accountNumber = utils.generateRandomAccountNumber();
+			Account account1 = new Account(accountNumber, LocalDate.now(), 5000);
 			client1.addAccount(account1);
 			accountRepository.save(account1);
 
@@ -63,7 +64,7 @@ public class HomebankingApplication {
 
 			Random random = new Random();
 
-			Account repAccount = accountRepository.findById(1L).orElse(null);
+			Account repAccount = accountRepository.findByAccountNumber(accountNumber);
 
 			for(int i=1; i<100; i++) {
 				String transactionDescription = description[random.nextInt(100) % description.length];
