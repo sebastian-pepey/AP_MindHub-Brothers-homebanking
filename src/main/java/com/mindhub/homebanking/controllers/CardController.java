@@ -36,7 +36,7 @@ public class CardController {
     }
 
     @RequestMapping(value = "/clients/current/cards", method = RequestMethod.POST)
-    public ResponseEntity<Object> addCards(Authentication authentication,
+    public ResponseEntity<String> addCards(Authentication authentication,
                                            @RequestParam CardType cardType,
                                            @RequestParam String cardColor) {
 

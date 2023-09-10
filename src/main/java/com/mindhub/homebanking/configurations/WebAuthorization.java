@@ -50,8 +50,11 @@ public class WebAuthorization {
 
         // if user is not authenticated, just send an authentication failure response
         http.exceptionHandling().authenticationEntryPoint((req, res, exc) -> {
-            //res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            res.sendRedirect("/web/index.html");
+            if(req.getRequestURI().equals("/error")){
+                res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            } else {
+                res.sendRedirect("/web/index.html");
+            }
         });
 
         // if login is successful, just clear the flags asking for authentication

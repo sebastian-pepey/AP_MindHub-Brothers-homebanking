@@ -7,6 +7,7 @@ import com.mindhub.homebanking.models.TransactionType;
 import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.ClientService;
 import com.mindhub.homebanking.services.TransactionService;
+import com.mindhub.homebanking.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,17 +52,17 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/clients/current/accounts", method = RequestMethod.POST)
-    public ResponseEntity<Object> addAccount(Authentication authentication) {
+    public ResponseEntity<String> addAccount(Authentication authentication) {
         Client currentClient = clientService.findByEmail(authentication.getName());
         if(currentClient.getAccounts().size() < 3 ){
             String accountNumberCandidate;
+            Utils utils = new Utils();
             do {
-                accountNumberCandidate = "VIN"+String.format("%8d",Math.round(Math.random()*(99999999)));
+                accountNumberCandidate = utils.generateRandomAccountNumber();
             }while(accountService.existByAccountNumber(accountNumberCandidate));
 
             Account newAccount = new Account(accountNumberCandidate, LocalDate.now(), 0);
             currentClient.addAccount(newAccount);
-
             accountService.saveInRepository(newAccount);
             clientService.saveInRepository(currentClient);
 
@@ -74,7 +75,7 @@ public class AccountController {
 
     @Transactional
     @RequestMapping(value = "/transactions", method = RequestMethod.POST)
-    public ResponseEntity<Object> makeTransactions(
+    public ResponseEntity<String> makeTransactions(
             @RequestParam String fromAccountNumber,
             @RequestParam String toAccountNumber,
             @RequestParam Double amount,

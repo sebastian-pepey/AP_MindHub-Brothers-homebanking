@@ -1,6 +1,7 @@
 package com.mindhub.homebanking;
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
+import com.mindhub.homebanking.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 @SpringBootApplication
 public class HomebankingApplication {
@@ -32,7 +34,8 @@ public class HomebankingApplication {
 	public CommandLineRunner init(ClientRepository clientRepository,
 								  AccountRepository accountRepository,
 								  LoanRepository loanRepository,
-								  CardRepository cardRepository) {
+								  CardRepository cardRepository,
+								  TransactionRepository transactionRepository) {
 		return args -> {
 
 			Client client1 = new Client("Melba","Morel","melbamorel@gmail.com", passwordEncoder.encode("oreo123"), ClientAuthority.CLIENT);
@@ -41,26 +44,36 @@ public class HomebankingApplication {
 			Client admin = new Client("admin","admin","admin@admin.com", passwordEncoder.encode("verruckt"), ClientAuthority.ADMIN);
 			clientRepository.save(admin);
 
+			Utils utils = new Utils();
 			// Create Account 1
-			Account account1 = new Account();
 
 			// Set attributes to Account 1
-			account1.setCreationDate(LocalDate.now());
-			account1.setAccountNumber("VIN001");
-			account1.setAccountBalance(5000);
-
+			Account account1 = new Account(utils.generateRandomAccountNumber(), LocalDate.now(), 5000);
 			client1.addAccount(account1);
 			accountRepository.save(account1);
 
 			// Create Account 2
-			Account account2 = new Account();
-
-			// Set attributes to Account 1
-			account2.setCreationDate(LocalDate.now().plusDays(1));
-			account2.setAccountNumber("VIN002");
-			account2.setAccountBalance(7500);
+			Account account2 = new Account(utils.generateRandomAccountNumber(), LocalDate.now(), 7500);
 			client1.addAccount(account2);
 			accountRepository.save(account2);
+			client1.addAccount(account2);
+			accountRepository.save(account2);
+
+			String[] description = {"CREDIT","DEBIT"};
+
+			Random random = new Random();
+
+			Account repAccount = accountRepository.findById(1L).orElse(null);
+
+			for(int i=1; i<100; i++) {
+				String transactionDescription = description[random.nextInt(100) % description.length];
+				double transactionAmount = Math.random()*10000*(TransactionType.valueOf(transactionDescription)==TransactionType.DEBIT?-1:1);
+				Transaction transaction = new Transaction(transactionAmount,LocalDateTime.now().plusDays(i % 5),transactionDescription,TransactionType.valueOf(transactionDescription), repAccount);
+				repAccount.setAccountBalance(repAccount.getAccountBalance()+transaction.getAmount());
+				transactionRepository.save(transaction);
+			}
+
+			accountRepository.save(repAccount);
 
 			loanRepository.save(new Loan("Hipotecario", 500000, List.of(12,24,36,48,60)));
 			loanRepository.save(new Loan("Automotriz", 300000, List.of(6,12,24,36)));

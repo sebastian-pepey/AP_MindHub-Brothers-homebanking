@@ -93,7 +93,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{ account.number }}</h5>
                                         <p class="card-text"> {{ formatDate(account.date) }}</p>
-                                        <p class="text-center lead account-balance"> ${{ account.balance }} </p>
+                                        <p class="text-center lead account-balance"> ${{ parseFloat(account.balance).toFixed(2) }} </p>
                                     </div>
                                 </div>
                             </a>

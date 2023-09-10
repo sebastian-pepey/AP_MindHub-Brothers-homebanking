@@ -37,7 +37,7 @@ public class LoansController {
 
     @Transactional
     @RequestMapping(value = "/loans", method = RequestMethod.POST)
-    public ResponseEntity<Object> applyForLoan(@RequestBody LoanApplicationDTO loanBody, Authentication authentication){
+    public ResponseEntity<String> applyForLoan(@RequestBody LoanApplicationDTO loanBody, Authentication authentication){
 
         if(loanBody.getLoanId() == null || loanBody.getAmount() == null || loanBody.getPayments() == null  || loanBody.getToAccountNumber() == null) {
             return new ResponseEntity<>("One of the field inputs is empty", HttpStatus.FORBIDDEN);

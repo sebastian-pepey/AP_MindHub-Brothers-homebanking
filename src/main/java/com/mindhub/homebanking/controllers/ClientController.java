@@ -31,7 +31,7 @@ public class ClientController {
         return clientService.getClients();}
 
     @RequestMapping(path = "/clients", method = RequestMethod.POST)
-    public ResponseEntity<Object> register(
+    public ResponseEntity<String> register(
             @RequestParam String firstName,
             @RequestParam String lastName,
             @RequestParam String email,

@@ -11,4 +11,8 @@ public class Utils {
         String[] cardNumbers = {String.valueOf(random.nextInt(8999)+1000),String.valueOf(random.nextInt(8999)+1000),String.valueOf(random.nextInt(8999)+1000),String.valueOf(random.nextInt(8999)+1000)};
         return String.join(" ",cardNumbers);
     }
+
+    public String generateRandomAccountNumber(){
+        return "VIN"+String.format("%8d",Math.round(Math.random()*(99999999)));
+    }
 }
