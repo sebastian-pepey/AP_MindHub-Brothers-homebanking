@@ -110,7 +110,7 @@ public class AccountController {
             Account accountTo = accountService.findByAccountNumber(toAccountNumber);
 
             accountFrom.setAccountBalance(accountFrom.getAccountBalance()-amount);
-            Transaction transactionFrom = new Transaction(amount, LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " to " + accountTo.getClient().getFirstName() + " " + accountTo.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
+            Transaction transactionFrom = new Transaction(-1*amount, LocalDateTime.now(), description + " - Debit from account " + accountFrom.getAccountNumber() + " to " + accountTo.getClient().getFirstName() + " " + accountTo.getClient().getLastName(), TransactionType.DEBIT, accountFrom );
             accountTo.setAccountBalance(accountTo.getAccountBalance()+amount);
             Transaction transactionTo = new Transaction(amount, LocalDateTime.now(), description + " - Transfer into account " +  accountTo.getAccountNumber() + " from " + accountFrom.getClient().getFirstName() + " " + accountFrom.getClient().getLastName(), TransactionType.CREDIT, accountTo );
 
