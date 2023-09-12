@@ -126,31 +126,4 @@ public class AccountController {
 
         return new ResponseEntity<>("Transaction Created",HttpStatus.CREATED);
     }
-
-    @PostMapping("/accounts/filterAccounts")
-    public ResponseEntity<Object> returnTransactionFilter(
-            @RequestParam(value = "minSearchDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime maxSearchDate,
-            @RequestParam(value = "maxSearchDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime minSearchDate,
-            @RequestParam(value = "wordFilter", required = false) String wordFilter,
-            @RequestParam(value = "inputTransactionType", required = false) String inputTransactionType,
-            Authentication authentication){
-
-        // Validar que Transaction Type es o no null. Si no es null, convertirlo a Transaction Type
-
-        if (inputTransactionType != null) {
-            try {
-                TransactionType transactionType = TransactionType.valueOf(inputTransactionType);
-            } catch (IllegalArgumentException e) {
-                return new ResponseEntity<>("El tipo de cuenta no es válido.", HttpStatus.FORBIDDEN);
-            }
-        } else {
-            return new ResponseEntity<>("HOLA", HttpStatus.OK);
-        }
-
-        // Hacer la búsqueda dependiendo de los que tienen Null
-        return null;
-        //List<TransactionDTO> transactionsDTO = transactionRepository.findByDateBetweenAndDescriptionAndType(minSearchDate,maxSearchDate,wordFilter,transactionType).stream().map(transaction -> new TransactionDTO(transaction)).collect(Collectors.toList());
-
-        //return new ResponseEntity<>(transactionsDTO,HttpStatus.OK);
-    }
 }
