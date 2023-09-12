@@ -5,6 +5,16 @@ Vue.createApp({
             accountInfo: {},
             errorToats: null,
             errorMsg: null,
+            minSearchDate: null,
+            maxSearchDate: null,
+            descriptionSearch: null,
+            transactionTypeSearch: null,
+            selminDate: null,
+            selmaxDate: null,
+            wordFilter: null,
+            transFilter: null,
+            minAmountFilter: null,
+            maxAmountFilter: null
         }
     },
     methods: {
@@ -13,9 +23,13 @@ Vue.createApp({
             const id = urlParams.get('id');
             axios.get(`/api/accounts/${id}`)
                 .then((response) => {
-                    //get client ifo
+                    //get client info
                     this.accountInfo = response.data;
-                    this.accountInfo.transactions.sort((a, b) => parseInt(b.id - a.id))
+                    this.minSearchDate = new Date(Math.min.apply(null, response.data.transactions.map(function(e) {return new Date(e.date)}))).toISOString().substring(0,19);
+                    this.selminDate = this.minSearchDate;
+                    this.maxSearchDate = new Date(Math.max.apply(null, response.data.transactions.map(function(e) {return new Date(e.date)}))).toISOString().substring(0,19);
+                    this.selmaxDate = this.maxSearchDate;
+                    this.accountInfo.transactions.sort(function(a, b) {return new Date(b.date) - new Date(a.date)})
                 })
                 .catch((error) => {
                     // handle error
@@ -35,6 +49,23 @@ Vue.createApp({
                 .then(response => window.location.href = "/web/index.html")
                 .catch(() => {
                     this.errorMsg = "Sign out failed"
+                    this.errorToats.show();
+                })
+        },
+        search: function () {
+            let config = {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            }
+            console.log(`/api/accounts/filterAccounts?minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}&wordFilter=${this.wordFilter}&inputTransactionType=${this.transFilter}`)
+            axios.post(`/api/accounts/filterAccounts?minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}&wordFilter=${this.wordFilter}&inputTransactionType=${this.transFilter}`,config)
+                .then(response => {
+                    this.accountInfo.transactions = response.data;
+                    console.log(this.accountInfo);
+                })
+                .catch((error) => {
+                    this.errorMsg = error.response.data;
                     this.errorToats.show();
                 })
         },

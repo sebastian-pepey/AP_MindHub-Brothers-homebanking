@@ -33,4 +33,15 @@ public class TransactionDTO {
     public TransactionType getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return "TransactionDTO{" +
+                "id=" + id +
+                ", amount=" + amount +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                '}';
+    }
 }

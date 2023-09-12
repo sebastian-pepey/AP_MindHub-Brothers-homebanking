@@ -20,17 +20,17 @@ public class ClientController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @RequestMapping(value = "/changeAuthority", method = RequestMethod.PATCH)
+    @PatchMapping(value = "/changeAuthority")
     public ResponseEntity<Object> changeAuthority(@RequestParam String email) {
         clientService.changeAuthority(email);
         return new ResponseEntity<>("Authority changed", HttpStatus.OK);
     }
 
-    @RequestMapping("/clients")
+    @GetMapping("/clients")
     public List<ClientDTO> getClients(){
         return clientService.getClients();}
 
-    @RequestMapping(path = "/clients", method = RequestMethod.POST)
+    @PostMapping(path = "/clients")
     public ResponseEntity<String> register(
             @RequestParam String firstName,
             @RequestParam String lastName,
@@ -49,12 +49,12 @@ public class ClientController {
         return new ResponseEntity<>("Client created",HttpStatus.CREATED);
     }
 
-    @RequestMapping("/clients/{id}")
+    @GetMapping("/clients/{id}")
     public ClientDTO getClient(@PathVariable long id){
         return clientService.getClient(id);
     }
 
-    @RequestMapping("/clients/current")
+    @GetMapping("/clients/current")
     public ClientDTO getConnectedClient(Authentication authentication) {
         return clientService.getConnectedClient(authentication);
     }
