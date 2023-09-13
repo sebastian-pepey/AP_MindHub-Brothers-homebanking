@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 public interface ClientService {
-    void changeAuthority(@RequestParam String email);
+    void changeAuthority(String email);
     List<ClientDTO> getClients();
-    ClientDTO getClient(@PathVariable long id);
+    ClientDTO getClient(long id);
     ClientDTO getConnectedClient(Authentication authentication);
     Client findByEmail(String email);
     void saveInRepository(Client client);

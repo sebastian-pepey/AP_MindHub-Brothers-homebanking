@@ -6,10 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Set;
 
 public interface LoanService {
-
     boolean existsById(Long id);
-
     Loan findById(long id);
-
     Set<LoanDTO> showLoans();
 }

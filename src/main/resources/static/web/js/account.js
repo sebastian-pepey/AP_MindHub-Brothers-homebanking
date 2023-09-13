@@ -7,21 +7,16 @@ Vue.createApp({
             errorMsg: null,
             minSearchDate: null,
             maxSearchDate: null,
-            descriptionSearch: null,
-            transactionTypeSearch: null,
             selminDate: null,
             selmaxDate: null,
-            wordFilter: null,
-            transFilter: null,
-            minAmountFilter: null,
-            maxAmountFilter: null
+            id: null
         }
     },
     methods: {
         getData: function () {
             const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            axios.get(`/api/accounts/${id}`)
+            this.id = urlParams.get('id');
+            axios.get(`/api/accounts/${this.id}`)
                 .then((response) => {
                     //get client info
                     this.accountInfo = response.data;
@@ -58,17 +53,32 @@ Vue.createApp({
                     'content-type': 'application/x-www-form-urlencoded'
                 }
             }
-            console.log(`/api/accounts/filterAccounts?minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}&wordFilter=${this.wordFilter}&inputTransactionType=${this.transFilter}`)
-            axios.post(`/api/accounts/filterAccounts?minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}&wordFilter=${this.wordFilter}&inputTransactionType=${this.transFilter}`,config)
+            axios.post(`/api/accounts/filterAccounts?id=${this.id}&minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}`,config)
                 .then(response => {
                     this.accountInfo.transactions = response.data;
-                    console.log(this.accountInfo);
                 })
                 .catch((error) => {
                     this.errorMsg = error.response.data;
                     this.errorToats.show();
                 })
         },
+        printPdf: function() {
+            let config = {
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            }
+            console.log(`/api/report?id=${this.id}&minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}`)
+            axios.get(`/api/report?id=${this.id}&minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}`,config)
+            .then(response => {
+                console.log(response)
+                window.open(URL.createObjectURL(response.data));
+            })
+            .catch((error) => {
+                this.errorMsg = error.response.data;
+                this.errorToats.show();
+            })
+        }
     },
     mounted: function () {
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));

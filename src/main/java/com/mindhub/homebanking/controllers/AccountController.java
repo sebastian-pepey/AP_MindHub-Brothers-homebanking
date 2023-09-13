@@ -1,11 +1,9 @@
 package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.dtos.AccountDTO;
-import com.mindhub.homebanking.dtos.TransactionDTO;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.models.TransactionType;
-import com.mindhub.homebanking.repositories.TransactionRepository;
 import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.ClientService;
 import com.mindhub.homebanking.services.TransactionService;
@@ -16,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,9 +31,6 @@ public class AccountController {
     private ClientService clientService;
     @Autowired
     private TransactionService transactionService;
-
-    @Autowired
-    private TransactionRepository transactionRepository;
 
     @GetMapping("/accounts")
     public List<AccountDTO> getAccounts(){
@@ -129,28 +123,25 @@ public class AccountController {
 
     @PostMapping("/accounts/filterAccounts")
     public ResponseEntity<Object> returnTransactionFilter(
-            @RequestParam(value = "minSearchDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime maxSearchDate,
-            @RequestParam(value = "maxSearchDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime minSearchDate,
-            @RequestParam(value = "wordFilter", required = false) String wordFilter,
-            @RequestParam(value = "inputTransactionType", required = false) String inputTransactionType,
-            Authentication authentication){
+        @RequestParam(value="id") Long id,
+        @RequestParam(value = "minSearchDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime minSearchDate,
+        @RequestParam(value = "maxSearchDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime maxSearchDate,
+        Authentication authentication){
 
-        // Validar que Transaction Type es o no null. Si no es null, convertirlo a Transaction Type
-
-        if (inputTransactionType != null) {
-            try {
-                TransactionType transactionType = TransactionType.valueOf(inputTransactionType);
-            } catch (IllegalArgumentException e) {
-                return new ResponseEntity<>("El tipo de cuenta no es válido.", HttpStatus.FORBIDDEN);
+        try {
+            if (accountService.getAccountById(id).getClient() != clientService.findByEmail(authentication.getName())) {
+                return new ResponseEntity<>("The client Authenticated does not have the requested account", HttpStatus.FORBIDDEN);
             }
-        } else {
-            return new ResponseEntity<>("HOLA", HttpStatus.OK);
+
+            if (minSearchDate == null || maxSearchDate == null) {
+                return new ResponseEntity<>("At least one of the Dates is null", HttpStatus.FORBIDDEN);
+            }
+            if (minSearchDate.isAfter(maxSearchDate)) {
+                return new ResponseEntity<>("The dates placed are wrong - Final Date is before Initial Date", HttpStatus.FORBIDDEN);
+            }
+            return new ResponseEntity<>(transactionService.findByDateBetweenAndAccount(minSearchDate, maxSearchDate, accountService.findByIdAndClient(id, clientService.findByEmail(authentication.getName()))), HttpStatus.OK);
+        } catch(NullPointerException e) {
+            return new ResponseEntity<>("The id Account does not exist", HttpStatus.FORBIDDEN);
         }
-
-        // Hacer la búsqueda dependiendo de los que tienen Null
-        return null;
-        //List<TransactionDTO> transactionsDTO = transactionRepository.findByDateBetweenAndDescriptionAndType(minSearchDate,maxSearchDate,wordFilter,transactionType).stream().map(transaction -> new TransactionDTO(transaction)).collect(Collectors.toList());
-
-        //return new ResponseEntity<>(transactionsDTO,HttpStatus.OK);
     }
 }

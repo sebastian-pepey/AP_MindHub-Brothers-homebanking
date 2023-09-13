@@ -8,12 +8,12 @@ import java.util.Set;
 
 public interface AccountService {
     List<AccountDTO> getAccounts();
-    AccountDTO getAccountById(Long id);
+    AccountDTO getAccountDTOById(Long id);
+    Account getAccountById(Long id);
     AccountDTO getAuthClientAccountById(Long id);
     Set<AccountDTO> showAccounts(Authentication authentication);
     boolean existByAccountNumber(String accountNumber);
     Account findByAccountNumber(String accountNumber);
-
     Account findByIdAndClient(Long id, Client client);
     void saveInRepository(Account account);
 }

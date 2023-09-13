@@ -60,7 +60,8 @@ public class HomebankingApplication {
 			client1.addAccount(account2);
 			accountRepository.save(account2);
 
-			String[] description = {"CREDIT","DEBIT"};
+			String[] description = {"Compra","Pago","Préstamo","Otros"};
+			String[] transactionType = {"CREDIT","DEBIT"};
 
 			Random random = new Random();
 
@@ -68,8 +69,9 @@ public class HomebankingApplication {
 
 			for(int i=1; i<100; i++) {
 				String transactionDescription = description[random.nextInt(100) % description.length];
-				double transactionAmount = Math.random()*10000*(TransactionType.valueOf(transactionDescription)==TransactionType.DEBIT?-1:1);
-				Transaction transaction = new Transaction(transactionAmount,LocalDateTime.now().plusDays(i % 5),transactionDescription,TransactionType.valueOf(transactionDescription), repAccount);
+				TransactionType transactionType1 = TransactionType.valueOf(transactionType[random.nextInt(100) % transactionType.length]);
+				double transactionAmount = Math.random()*10000*(transactionType1==TransactionType.DEBIT?-1:1);
+				Transaction transaction = new Transaction(transactionAmount,LocalDateTime.now().plusDays(i % 5),transactionDescription,transactionType1, repAccount);
 				repAccount.setAccountBalance(repAccount.getAccountBalance()+transaction.getAmount());
 				transactionRepository.save(transaction);
 			}

@@ -13,6 +13,7 @@ public class Utils {
     }
 
     public String generateRandomAccountNumber(){
-        return "VIN"+String.format("%8d",Math.round(Math.random()*(99999999)));
+        Random random = new Random();
+        return "VIN"+String.format("%8d",random.nextInt(89999999)+10000000);
     }
 }

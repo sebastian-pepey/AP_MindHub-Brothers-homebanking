@@ -26,8 +26,13 @@ public class AccountServiceImplement implements AccountService {
         return accountRepository.findAll().stream().map( account -> new AccountDTO(account)).collect(Collectors.toList());
     }
     @Override
-    public AccountDTO getAccountById(Long id) {
+    public AccountDTO getAccountDTOById(Long id) {
         return new AccountDTO(accountRepository.findById(id).orElse(null));
+    }
+
+    @Override
+    public Account getAccountById(Long id) {
+        return accountRepository.findById(id).orElse(null);
     }
 
     @Override
