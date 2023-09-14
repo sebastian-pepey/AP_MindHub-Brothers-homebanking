@@ -67,13 +67,8 @@ Vue.createApp({
             .then((response) => {
                 const blob = new Blob([response.data], { type: 'application/pdf' });
                 const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                pdf = url;
-                a.click();
                 // Open the PDF in a new tab or window
-                //window.open(url, '_blank');
+                window.open(url, '_blank');
             })
             .catch((error) => {
                 this.errorMsg = error;

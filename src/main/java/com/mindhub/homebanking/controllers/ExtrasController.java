@@ -45,26 +45,43 @@ public class ExtrasController {
     private AccountService accountService;
 
     @GetMapping("/report")
-    public void convertPdf(
+    public ResponseEntity<String> convertPdf(
         HttpServletResponse response,
+        @RequestParam(value = "id") Long id,
         @RequestParam(value = "minSearchDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime minSearchDate,
         @RequestParam(value = "maxSearchDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime maxSearchDate,
-        @RequestParam(value = "id") Long id,
         Authentication authentication) throws IOException, DocumentException, URISyntaxException {
 
-        Account account = accountService.findByIdAndClient(id, clientService.findByEmail(authentication.getName()));
+        try {
+            if (accountService.getAccountById(id).getClient() != clientService.findByEmail(authentication.getName())) {
+                return new ResponseEntity<>("The client Authenticated does not have the requested account", HttpStatus.FORBIDDEN);
+            }
 
-        List<TransactionDTO> transactionDTOList = transactionService.findByDateBetweenAndAccount(minSearchDate,maxSearchDate,account);
+            if (minSearchDate == null || maxSearchDate == null) {
+                return new ResponseEntity<>("At least one of the Dates is null", HttpStatus.FORBIDDEN);
+            }
+            if (minSearchDate.isAfter(maxSearchDate)) {
+                return new ResponseEntity<>("The dates placed are wrong - Final Date is before Initial Date", HttpStatus.FORBIDDEN);
+            }
 
-        response.setContentType("application/pdf");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+            Account account = accountService.findByIdAndClient(id, clientService.findByEmail(authentication.getName()));
+            List<TransactionDTO> transactionDTOList = transactionService.findByDateBetweenAndAccount(minSearchDate,maxSearchDate,account);
 
-        String currentDateTime = dateFormatter.format(new Date());
+            response.setContentType("application/pdf");
+            DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
 
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=transactions_report_" + currentDateTime + ".pdf";
-        response.setHeader(headerKey, headerValue);
+            String currentDateTime = dateFormatter.format(new Date());
 
-        createPDFService.export(response, minSearchDate, maxSearchDate, account, transactionDTOList);
+            String headerKey = "Content-Disposition";
+            String headerValue = "attachment; filename=transactions_report_" + currentDateTime + ".pdf";
+            response.setHeader(headerKey, headerValue);
+
+            createPDFService.export(response, minSearchDate, maxSearchDate, account, transactionDTOList);
+
+            return new ResponseEntity<>("Document Created", HttpStatus.OK);
+
+        } catch(NullPointerException e) {
+            return new ResponseEntity<>("The id Account does not exist", HttpStatus.FORBIDDEN);
+        }
     }
 }
