@@ -59,12 +59,19 @@ public class CardController {
             @RequestParam String cardNumber,
             Authentication authentication
     ){
-        Card cardToDelete = cardService.findByNumber(cardNumber);
-        cardToDelete.setActive(false);
+        try {
+            if (cardService.findByNumber(cardNumber).getCardholder() != clientService.findByEmail(authentication.getName())) {
+                return new ResponseEntity<>("The Authorized Client does not have the selected Card by Number", HttpStatus.FORBIDDEN);
+            }
 
-        cardService.saveInRepository(cardToDelete);
+            Card cardToDelete = cardService.findByNumber(cardNumber);
+            cardToDelete.setActive(false);
 
-        return new ResponseEntity<>("Card Deleted", HttpStatus.OK);
+            cardService.saveInRepository(cardToDelete);
 
+            return new ResponseEntity<>("Card Deleted", HttpStatus.OK);
+        } catch (NullPointerException e){
+            return new ResponseEntity<>("The card entered was not found in the system", HttpStatus.BAD_REQUEST);
+        }
     }
 }
