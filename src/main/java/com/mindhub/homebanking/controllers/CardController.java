@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Random;
 import java.util.Set;
 
 @RestController
@@ -41,13 +40,11 @@ public class CardController {
 
         if( cardService.countClientCards(currentClient,cardType) < 3) {
             String newCardNumber;
-            Random random = new Random();
-            Utils utils = new Utils();
             do {
-                newCardNumber = utils.generateRandomCardNumber();
+                newCardNumber = Utils.generateRandomCardNumber();
             } while(cardService.findByNumber(newCardNumber) != null);
 
-            Card newCard = new Card(String.valueOf(newCardNumber), currentClient, LocalDate.now(), LocalDate.now().plusYears(5), random.nextInt(1000), cardType, CardColor.valueOf(cardColor));
+            Card newCard = new Card(String.valueOf(newCardNumber), currentClient, LocalDate.now(), LocalDate.now().plusYears(5), Utils.generateRandomCvv(), cardType, CardColor.valueOf(cardColor));
             currentClient.addCard(newCard);
             cardService.saveInRepository(newCard);
             clientService.saveInRepository(currentClient);

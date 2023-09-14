@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -57,9 +56,8 @@ public class AccountController {
         Client currentClient = clientService.findByEmail(authentication.getName());
         if(currentClient.getAccounts().size() < 3 ){
             String accountNumberCandidate;
-            Utils utils = new Utils();
             do {
-                accountNumberCandidate = utils.generateRandomAccountNumber();
+                accountNumberCandidate = Utils.generateRandomAccountNumber();
             }while(accountService.existByAccountNumber(accountNumberCandidate));
 
             Account newAccount = new Account(accountNumberCandidate, LocalDate.now(), 0);

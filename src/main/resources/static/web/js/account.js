@@ -62,20 +62,21 @@ Vue.createApp({
                     this.errorToats.show();
                 })
         },
-        printPdf: function() {
-            let config = {
-                headers: {
-                    'content-type': 'application/x-www-form-urlencoded'
-                }
-            }
-            console.log(`/api/report?id=${this.id}&minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}`)
-            axios.get(`/api/report?id=${this.id}&minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}`,config)
-            .then(response => {
-                console.log(response)
-                window.open(URL.createObjectURL(response.data));
+        printPdf: function() {      
+            axios.get(`/api/report?id=${this.id}&minSearchDate=${this.selminDate}&maxSearchDate=${this.selmaxDate}`, {'responseType': 'blob'})
+            .then((response) => {
+                const blob = new Blob([response.data], { type: 'application/pdf' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                pdf = url;
+                a.click();
+                // Open the PDF in a new tab or window
+                //window.open(url, '_blank');
             })
             .catch((error) => {
-                this.errorMsg = error.response.data;
+                this.errorMsg = error;
                 this.errorToats.show();
             })
         }

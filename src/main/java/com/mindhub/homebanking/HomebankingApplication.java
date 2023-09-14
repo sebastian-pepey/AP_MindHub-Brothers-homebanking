@@ -1,25 +1,13 @@
 package com.mindhub.homebanking;
-import com.mindhub.homebanking.models.*;
-import com.mindhub.homebanking.repositories.*;
-import com.mindhub.homebanking.utils.Utils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Random;
 
 @SpringBootApplication
 public class HomebankingApplication {
 
 	// Password Encoder
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	/*@Autowired
+	private PasswordEncoder passwordEncoder;*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(HomebankingApplication.class, args);
@@ -31,7 +19,7 @@ public class HomebankingApplication {
 	// correspondientes al cliente de prueba, y dicho objeto se guarda empleando el método save de la clase
 	// clientRepository creada la interfaz de repositorios (JPA).
 	//@Bean
-	public CommandLineRunner init(ClientRepository clientRepository,
+	/*public CommandLineRunner init(ClientRepository clientRepository,
 								  AccountRepository accountRepository,
 								  LoanRepository loanRepository,
 								  CardRepository cardRepository,
@@ -89,6 +77,6 @@ public class HomebankingApplication {
 			cardRepository.save(card2);
 
 		};
-	}
+	}*/
 }
 

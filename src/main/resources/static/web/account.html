@@ -96,12 +96,6 @@
                             <div>
                                 <label for="dateFrom" class="me-2">From</label><input type="datetime-local" id="dateFrom" :min="minSearchDate" :max="selmaxDate" v-model="selminDate">
                                 <label for="dateTo" class="mx-2">To</label><input type="datetime-local" id="dateTo" :min="selminDate" :max="maxSearchDate" v-model="selmaxDate">
-                                <label for="byWord" class="mx-2">By Description</label><input type="text" id="byWord" v-model="wordFilter">
-                                <label for="transactionType" class="mx-2">by Type</label>
-                                <select name="transactionType" id="transactionType" v-model="transFilter">
-                                    <option value="">TODOS</option>
-                                    <option v-for="transType in accountInfo.transactionTypes">{{transType}}</option>
-                                </select>
                                 <button class="btn btn-primary ms-2" v-on:click="search">Search</button>
                             </div>
                         </div>

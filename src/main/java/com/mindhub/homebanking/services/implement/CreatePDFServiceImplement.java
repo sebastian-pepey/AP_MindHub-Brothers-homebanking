@@ -64,10 +64,7 @@ public class CreatePDFServiceImplement implements CreatePDFService {
         table.setSpacingBefore(10);
         addTableHeader(table);
         addRows(table,transactionDTOList);
-
         document.add(table);
-        document.close();
-
         document.close();
     }
 
