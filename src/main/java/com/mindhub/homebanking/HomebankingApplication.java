@@ -1,6 +1,18 @@
 package com.mindhub.homebanking;
+import com.mindhub.homebanking.models.*;
+import com.mindhub.homebanking.repositories.*;
+import com.mindhub.homebanking.utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Random;
 
 @SpringBootApplication
 public class HomebankingApplication {
@@ -18,8 +30,8 @@ public class HomebankingApplication {
 	// Dentro del método, se instancia la clase Cliente previamente creada, en este caso con parámetros
 	// correspondientes al cliente de prueba, y dicho objeto se guarda empleando el método save de la clase
 	// clientRepository creada la interfaz de repositorios (JPA).
-	//@Bean
-	/*public CommandLineRunner init(ClientRepository clientRepository,
+	/*@Bean
+	public CommandLineRunner init(ClientRepository clientRepository,
 								  AccountRepository accountRepository,
 								  LoanRepository loanRepository,
 								  CardRepository cardRepository,
@@ -32,17 +44,16 @@ public class HomebankingApplication {
 			Client admin = new Client("admin","admin","admin@admin.com", passwordEncoder.encode("verruckt"), ClientAuthority.ADMIN);
 			clientRepository.save(admin);
 
-			Utils utils = new Utils();
 			// Create Account 1
 
 			// Set attributes to Account 1
-			String accountNumber = utils.generateRandomAccountNumber();
+			String accountNumber = Utils.generateRandomAccountNumber();
 			Account account1 = new Account(accountNumber, LocalDate.now(), 5000);
 			client1.addAccount(account1);
 			accountRepository.save(account1);
 
 			// Create Account 2
-			Account account2 = new Account(utils.generateRandomAccountNumber(), LocalDate.now(), 7500);
+			Account account2 = new Account(Utils.generateRandomAccountNumber(), LocalDate.now(), 7500);
 			client1.addAccount(account2);
 			accountRepository.save(account2);
 			client1.addAccount(account2);
@@ -59,7 +70,7 @@ public class HomebankingApplication {
 				String transactionDescription = description[random.nextInt(100) % description.length];
 				TransactionType transactionType1 = TransactionType.valueOf(transactionType[random.nextInt(100) % transactionType.length]);
 				double transactionAmount = Math.random()*10000*(transactionType1==TransactionType.DEBIT?-1:1);
-				Transaction transaction = new Transaction(transactionAmount,LocalDateTime.now().plusDays(i % 5),transactionDescription,transactionType1, repAccount);
+				Transaction transaction = new Transaction(transactionAmount, LocalDateTime.now().plusDays(i % 5),transactionDescription,transactionType1, repAccount);
 				repAccount.setAccountBalance(repAccount.getAccountBalance()+transaction.getAmount());
 				transactionRepository.save(transaction);
 			}
@@ -70,10 +81,10 @@ public class HomebankingApplication {
 			loanRepository.save(new Loan("Automotriz", 300000, List.of(6,12,24,36)));
 			loanRepository.save(new Loan("Personal", 100000, List.of(6,12,24)));
 
-			Card card1 = new Card("3325 6745 7876 4445", client1, LocalDate.of(2023,04,26), LocalDate.of(2021,04,26).plusYears(5), 990, CardType.DEBIT, CardColor.GOLD);
+			Card card1 = new Card("3325 6745 7876 4445", client1, LocalDate.of(2023,04,26), LocalDate.of(2021,04,26).plusYears(5), 990, CardType.DEBIT, CardColor.GOLD, true);
 			cardRepository.save(card1);
 
-			Card card2 = new Card("2234 6745 552 7888", client1, LocalDate.of(2022,04,26), LocalDate.of(2021,04,26).plusYears(5), 750, CardType.DEBIT, CardColor.TITANIUM);
+			Card card2 = new Card("2234 6745 552 7888", client1, LocalDate.of(2022,04,26), LocalDate.of(2021,04,26).plusYears(5), 750, CardType.CREDIT, CardColor.TITANIUM, true);
 			cardRepository.save(card2);
 
 		};

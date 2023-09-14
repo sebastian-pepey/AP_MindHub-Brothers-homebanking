@@ -83,8 +83,12 @@
                     <div class="row mt-3">
                         <div class="col">
                             <h2 class="display-6 subtitle">Debit Cards</h2>
-                            <a v-if="clientInfo.cards != null && clientInfo.cards.length < 6" href="create-cards.html"
+                            <a v-if="clientInfo.cards != null && creditCards.length + debitCards.length < 6" href="create-cards.html"
                                 id="create" class="btn btn-sm btn-success">Create</a>
+                                <div>
+                                    <button v-for="card in debitCards"
+                                    id="create" class="btn btn-sm btn-danger mx-1" v-on:click="deleteCard(card.number)">Delete {{card.number}}</button>
+                                </div>
                             <div v-if="debitCards.length <= 0"><span class="small">No debit cards</span></div>
                         </div>
                     </div>
@@ -125,13 +129,17 @@
                     <div class="row mt-3">
                         <div class="col">
                             <h2 class="display-6">Credit Cards</h2>
+                            <div>
+                                <button v-for="card in creditCards"
+                                id="create" class="btn btn-sm btn-danger mx-1" v-on:click="deleteCard(card.number)">Delete {{card.number}}</button>
+                            </div>
                             <span class="small" v-if="creditCards.length <= 0">No credit cards</span>
                         </div>
                     </div>
                     <div class="row">
                         <div v-for="card in creditCards" class="plastic-card col-12 col-md-3 mt-2">
                             <div
-                                v-bind:class="['plastic-card__front', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__front', 'plastic-card__part', [new Date(card.thruDate) > new Date() ? card.color.toLowerCase() : 'red'] +'-plastic-card']">
                                 <div class="plastic-card__square">
                                     <span class="plastic-card__label">{{ card.type}} {{ card.color }}</span>
                                 </div>
@@ -148,7 +156,7 @@
                             </div>
 
                             <div
-                                v-bind:class="['plastic-card__back', 'plastic-card__part', card.color.toLowerCase() +'-plastic-card']">
+                                v-bind:class="['plastic-card__back', 'plastic-card__part', [new Date(card.thruDate) > new Date() ? card.color.toLowerCase() : 'red'] +'-plastic-card']">
                                 <div class="plastic-card__black-line"></div>
                                 <div class="plastic-card__back-content">
                                     <div class="plastic-card__secret">

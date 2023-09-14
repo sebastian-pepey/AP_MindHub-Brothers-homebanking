@@ -44,7 +44,7 @@ public class CardController {
                 newCardNumber = Utils.generateRandomCardNumber();
             } while(cardService.findByNumber(newCardNumber) != null);
 
-            Card newCard = new Card(String.valueOf(newCardNumber), currentClient, LocalDate.now(), LocalDate.now().plusYears(5), Utils.generateRandomCvv(), cardType, CardColor.valueOf(cardColor));
+            Card newCard = new Card(String.valueOf(newCardNumber), currentClient, LocalDate.now(), LocalDate.now().plusYears(5), Utils.generateRandomCvv(), cardType, CardColor.valueOf(cardColor), true);
             currentClient.addCard(newCard);
             cardService.saveInRepository(newCard);
             clientService.saveInRepository(currentClient);
@@ -52,5 +52,19 @@ public class CardController {
         } else {
             return new ResponseEntity<>("The client can't create more than 3 cards",HttpStatus.FORBIDDEN);
         }
+    }
+
+    @PatchMapping("/client/current/cards/delete")
+    public ResponseEntity<String> deleteCard(
+            @RequestParam String cardNumber,
+            Authentication authentication
+    ){
+        Card cardToDelete = cardService.findByNumber(cardNumber);
+        cardToDelete.setActive(false);
+
+        cardService.saveInRepository(cardToDelete);
+
+        return new ResponseEntity<>("Card Deleted", HttpStatus.OK);
+
     }
 }

@@ -42,6 +42,10 @@
 	background: linear-gradient(45deg, #6ea3e0, #185781);
 }
 
+.red-plastic-card {
+	background: linear-gradient(45deg, #f80000, #910707);
+}
+
 
 .plastic-card__front {
 	padding: 18px;

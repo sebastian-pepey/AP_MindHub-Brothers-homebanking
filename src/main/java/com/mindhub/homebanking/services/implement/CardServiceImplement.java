@@ -22,7 +22,7 @@ public class CardServiceImplement implements CardService {
 
     @Override
     public Set<CardDTO> showCards(Client client) {
-        return client.getCards().stream().map( card -> new CardDTO(card)).collect(Collectors.toSet());
+        return client.getCards().stream().filter(card -> card.isActive()).map( card -> new CardDTO(card)).collect(Collectors.toSet());
     }
 
     @Override
@@ -32,7 +32,7 @@ public class CardServiceImplement implements CardService {
 
     @Override
     public int countClientCards(Client client, CardType cardType) {
-        return client.getCards().stream().filter( card -> card.getCardType() == cardType).collect(Collectors.toSet()).size();
+        return client.getCards().stream().filter(card -> card.isActive()).filter( card -> card.getCardType() == cardType).collect(Collectors.toSet()).size();
     }
 
     @Override

@@ -24,10 +24,11 @@ public class Card {
     private int cvv;
     private CardType type;
     private CardColor cardColor;
+    private boolean active;
 
     public Card() { }
 
-    public Card(String number, Client cardholder, LocalDate fromDate, LocalDate thruDate, int cvv, CardType type, CardColor cardColor) {
+    public Card(String number, Client cardholder, LocalDate fromDate, LocalDate thruDate, int cvv, CardType type, CardColor cardColor, boolean isActive) {
         this.number = number;
         this.cardholder = cardholder;
         this.fromDate = fromDate;
@@ -35,6 +36,7 @@ public class Card {
         this.cvv = cvv;
         this.type = type;
         this.cardColor = cardColor;
+        this.active = isActive;
     }
 
     public Long getId() {
@@ -91,6 +93,14 @@ public class Card {
 
     public CardColor getCardColor() {
         return cardColor;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public void setCardColor(CardColor cardColor) {

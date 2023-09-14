@@ -15,8 +15,9 @@ Vue.createApp({
                 .then((response) => {
                     //get client info
                     this.clientInfo = response.data;
-                    this.creditCards = this.clientInfo.cards.filter(card => card.type == "CREDIT");
-                    this.debitCards = this.clientInfo.cards.filter(card => card.type == "DEBIT");
+                    console.log(this.clientInfo.cards);
+                    this.creditCards = this.clientInfo.cards.filter(card => card.type == "CREDIT" && card.active == true);
+                    this.debitCards = this.clientInfo.cards.filter(card => card.type == "DEBIT" && card.active == true);
                 })
                 .catch((error) => {
                     this.errorMsg = "Error getting data";
@@ -34,6 +35,16 @@ Vue.createApp({
                     this.errorToats.show();
                 })
         },
+        deleteCard: function(cardToDelete) {
+            axios.patch(`/api/client/current/cards/delete?cardNumber=${cardToDelete}`)
+                .then((response) => {
+                    this.getData();
+                })
+                .catch((error) => {
+                    this.errorMsg = "Error getting data";
+                    this.errorToats.show();
+                })
+        }
     },
     mounted: function () {
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));

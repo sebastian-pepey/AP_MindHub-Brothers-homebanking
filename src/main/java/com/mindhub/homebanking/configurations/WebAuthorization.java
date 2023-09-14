@@ -25,6 +25,7 @@ public class WebAuthorization {
                 .antMatchers("/web/**","/api/loans","/api/transactions","/api/report","/api/accounts/**","/api/clients/current/**").hasAuthority("CLIENT")
                 .antMatchers("/api/clients/**","/manager.html","/manager.js","/rest/**","/h2-console/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PATCH,"/api/changeAuthority").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.PATCH,"/api/client/current/cards/delete").hasAuthority("CLIENT")
                 .anyRequest().denyAll();
 
         http.formLogin()
